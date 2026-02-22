@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>انضم إلى اللعبة</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="styles-common.css" rel="stylesheet">
+    <style>
+        body { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .join-container { flex-shrink: 0; }
+        .join-card {
+            width: min(520px, 92vw);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 18px;
+            padding: 22px 18px;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.25);
+        }
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .step {
+            background: rgba(0, 0, 0, 0.22);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            padding: 10px 8px;
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-weight: 700;
+            font-size: 0.92rem;
+        }
+        .step .step-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--navis-primary), var(--navis-secondary));
+            color: #001018;
+            margin-left: 6px;
+            font-weight: 900;
+        }
+        .back-link { text-align: center; margin-top: 20px; }
+        .back-link a { color: var(--navis-primary); text-decoration: none; font-weight: 600; }
+        .back-link a:hover { color: var(--navis-secondary); }
+        .alert { border-radius: var(--radius-md); margin-bottom: 20px; }
+        .btn-warning { background: linear-gradient(135deg, var(--navis-orange), #e67e22); color: #fff; border: none; border-radius: var(--radius-md); padding: 10px 18px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        .btn-warning:hover { opacity: 0.9; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <div class="join-container">
+
+        <div class="join-card">
+            <div class="steps">
+                <div class="step"><span class="step-num">1</span> أدخل الكود</div>
+                <div class="step"><span class="step-num">2</span> اكتب اسم الفريق</div>
+                <div class="step"><span class="step-num">3</span> ابدأ</div>
+            </div>
+
+            <div class="header science-header">
+                <h1>
+                    <span class="entry-icon">🎓</span>
+                    انضم إلى اللعبة
+                </h1>
+                <p>أدخل كود الغرفة ومعلومات فريقك للبدء</p>
+            </div>
+            
+            <div id="alert-container"></div>
+            
+            <form id="join-form">
+                <div class="form-group form-group-science">
+                    <label for="room-code">
+                        <i class="fas fa-door-open"></i>
+                        كود الغرفة
+                    </label>
+                    <input 
+                        type="text" 
+                        id="room-code" 
+                        class="form-control" 
+                        placeholder="أدخل 4 أرقام"
+                        maxlength="4"
+                        pattern="[0-9]{4}"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group form-group-science">
+                    <label for="team-name">
+                        <i class="fas fa-users"></i>
+                        اسم الفريق
+                    </label>
+                    <input 
+                        type="text" 
+                        id="team-name" 
+                        class="form-control" 
+                        placeholder="أدخل اسم فريقك"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group form-group-science">
+                    <label for="leader-name">
+                        <i class="fas fa-crown"></i>
+                        اسم القائد
+                    </label>
+                    <input 
+                        type="text" 
+                        id="leader-name" 
+                        class="form-control" 
+                        placeholder="أدخل اسم القائد"
+                        required
+                    >
+                </div>
+                
+                <button type="submit" class="btn btn-science" id="join-btn">
+                    <i class="fas fa-play"></i>
+                    انضمام للعبة
+                </button>
+            </form>
+        </div>
+        
+        <div class="back-link">
+            <a href="game.html">
+                <i class="fas fa-arrow-right"></i>
+                العودة للصفحة الرئيسية
+            </a>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="firebase-sync.js"></script>
+    <script>
+        // عناصر واجهة المستخدم
+        const elements = {
+            roomCodeInput: document.getElementById('room-code'),
+            teamNameInput: document.getElementById('team-name'),
+            leaderNameInput: document.getElementById('leader-name'),
+            joinForm: document.getElementById('join-form'),
+            joinBtn: document.getElementById('join-btn'),
+            alertContainer: document.getElementById('alert-container')
+        };
+
+        let isJoining = false;
+
+        // عرض الإشعارات
+        function showAlert(message, type = 'info') {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show`;
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            elements.alertContainer.appendChild(alert);
+            
+            // إزالة الإشعار تلقائياً بعد 5 ثواني
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 5000);
+        }
+
+        // التحقق من صحة كود الغرفة
+        function validateRoomCode(code) {
+            return /^\d{4}$/.test(code);
+        }
+
+        // الانضمام للغرفة
+        function joinRoom(e) {
+            e.preventDefault();
+
+            if (isJoining) {
+                return;
+            }
+            
+            const roomCode = elements.roomCodeInput.value.trim();
+            const teamName = elements.teamNameInput.value.trim();
+            const leaderName = elements.leaderNameInput.value.trim();
+            
+            if (!validateRoomCode(roomCode)) {
+                showAlert('الرجاء إدخال كود غرفة صالح مكون من 4 أرقام', 'danger');
+                return;
+            }
+            if (teamName.length < 3) {
+                showAlert('الرجاء إدخال اسم الفريق (3 أحرف على الأقل)', 'danger');
+                return;
+            }
+            if (leaderName.length < 3) {
+                showAlert('الرجاء إدخال اسم القائد (3 أحرف على الأقل)', 'danger');
+                return;
+            }
+
+            isJoining = true;
+            
+            elements.joinBtn.disabled = true;
+            elements.joinBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الانضمام...';
+            
+            function doJoin(roomOk, isFromFirebase) {
+                if (!roomOk) {
+                    elements.joinBtn.disabled = false;
+                    elements.joinBtn.innerHTML = '<i class="fas fa-play"></i> انضمام للعبة';
+                    isJoining = false;
+                    showAlert('عذراً، لم يتم العثور على غرفة بهذا الكود. تأكد من الكود أو فعّل Firebase للمزامنة بين الأجهزة.', 'danger');
+                    return;
+                }
+                
+                var gameStarted = localStorage.getItem('gameStarted');
+                var gameInProgress = localStorage.getItem('gameInProgress');
+                var currentQuestionIndex = localStorage.getItem('currentQuestionIndex');
+                var questionStartTime = localStorage.getItem('questionStartTime');
+                if (isFromFirebase) {
+                    gameStarted = (window._roomFromServer && window._roomFromServer.gameStarted) ? 'true' : gameStarted;
+                    gameInProgress = (window._roomFromServer && window._roomFromServer.gameInProgress) ? 'true' : gameInProgress;
+                }
+                if (gameStarted === 'true' && gameInProgress === 'true' && currentQuestionIndex !== null && questionStartTime !== null) {
+                    elements.joinBtn.disabled = false;
+                    elements.joinBtn.innerHTML = '<i class="fas fa-play"></i> انضمام للعبة';
+                    isJoining = false;
+                    showAlert('عذراً، اللعبة قد بدأت بالفعل. لا يمكن الانضمام بعد بدء اللعبة.', 'danger');
+                    return;
+                }
+                
+                var teamData = {
+                    id: Date.now().toString() + '_' + Math.random().toString(36).substr(2, 6),
+                    teamName: teamName,
+                    leaderName: leaderName,
+                    joinedAt: new Date().toISOString()
+                };
+                
+                localStorage.setItem('currentTeam', JSON.stringify(teamData));
+                localStorage.setItem('roomCode', roomCode);
+                localStorage.setItem('currentRoom', roomCode);
+                localStorage.setItem('roomActive', 'true');
+                
+                if (!isFromFirebase) {
+                    var connectedTeams = JSON.parse(localStorage.getItem('connectedTeams') || '[]');
+                    if (!connectedTeams.find(function(t) { return t.id === teamData.id; })) {
+                        connectedTeams.push({ ...teamData, score: 0, hasAnswered: false, status: 'waiting' });
+                        localStorage.setItem('connectedTeams', JSON.stringify(connectedTeams));
+                    }
+                }
+                
+                showAlert('تم الانضمام للغرفة بنجاح! في انتظار بدء اللعبة...', 'success');
+                isJoining = false;
+                setTimeout(function() { window.location.href = 'student-waiting.html'; }, 1500);
+            }
+            
+            if (typeof FirebaseSync !== 'undefined' && FirebaseSync.isEnabled()) {
+                var teamId = Date.now().toString() + '_' + Math.random().toString(36).substr(2, 6);
+                var teamData = { id: teamId, teamName: teamName, leaderName: leaderName, joinedAt: new Date().toISOString() };
+                var joined = false;
+                var doJoin = function() {
+                    if (joined) return;
+                    joined = true;
+                    localStorage.setItem('currentTeam', JSON.stringify(teamData));
+                    localStorage.setItem('roomCode', roomCode);
+                    localStorage.setItem('currentRoom', roomCode);
+                    localStorage.setItem('roomActive', 'true');
+                    showAlert('تم الانضمام للغرفة بنجاح!', 'success');
+                    setTimeout(function() { window.location.href = 'student-waiting.html'; }, 500);
+                };
+                var timeoutId = setTimeout(function() {
+                    if (!joined) {
+                        console.warn('[Firebase] انتهت مهلة الاتصال - الانضمام تلقائياً');
+                        doJoin();
+                    }
+                }, 5000);
+                try {
+                    FirebaseSync.getRoomFromServer(roomCode).then(function(room) {
+                        clearTimeout(timeoutId);
+                        console.log('[Firebase] بيانات الغرفة:', room);
+                        if (room && room.roomActive === true) {
+                            var team = { id: teamId, teamName: teamName, leaderName: leaderName, joinedAt: teamData.joinedAt };
+                            FirebaseSync.addTeamToRoom(roomCode, team).then(function(success) {
+                                console.log('[Firebase] تم إضافة الفريق:', success);
+                                doJoin();
+                            }).catch(function(err) {
+                                console.error('[Firebase] خطأ في إضافة الفريق:', err);
+                                if (err && err.message && err.message.includes('disabled')) {
+                                    showAlert('⚠️ قاعدة البيانات معطلة. جاري الانضمام محلياً...', 'warning');
+                                }
+                                doJoin();
+                            });
+                        } else if (room === null) {
+                            console.warn('[Firebase] قاعدة البيانات معطلة أو غير متاحة - الانضمام محلياً');
+                            showAlert('⚠️ قاعدة البيانات معطلة. جاري الانضمام محلياً...', 'warning');
+                            doJoin();
+                        } else {
+                            if (!joined) {
+                                elements.joinBtn.disabled = false;
+                                elements.joinBtn.innerHTML = '<i class="fas fa-play"></i> انضمام للعبة';
+                                showAlert('عذراً، لم يتم العثور على غرفة بهذا الكود. الرجاء التأكد من الكود.', 'danger');
+                            }
+                        }
+                    }).catch(function(err) {
+                        clearTimeout(timeoutId);
+                        console.error('[Firebase] خطأ في التحقق من الغرفة:', err);
+                        if (err && err.message && err.message.includes('disabled')) {
+                            console.warn('[Firebase] قاعدة البيانات معطلة - الانضمام محلياً');
+                            showAlert('⚠️ قاعدة البيانات معطلة. جاري الانضمام محلياً...', 'warning');
+                            doJoin();
+                        } else if (!joined) {
+                            elements.joinBtn.disabled = false;
+                            elements.joinBtn.innerHTML = '<i class="fas fa-play"></i> انضمام للعبة';
+                            showAlert('حدث خطأ في الاتصال. حاول مرة أخرى.', 'danger');
+                        }
+                    });
+                } catch (e) {
+                    clearTimeout(timeoutId);
+                    console.error('[Firebase] خطأ عام:', e);
+                    if (e.message && e.message.includes('disabled')) {
+                        showAlert('⚠️ قاعدة البيانات معطلة. جاري الانضمام محلياً...', 'warning');
+                    }
+                    doJoin();
+                }
+                return;
+            }
+            
+            var currentRoom = localStorage.getItem('currentRoom');
+            var isRoomActive = localStorage.getItem('roomActive') === 'true';
+            if (currentRoom !== roomCode || !isRoomActive) {
+                doJoin(false, false);
+                return;
+            }
+            doJoin(true, false);
+        }
+
+        // إعداد مستمعي الأحداث
+        function setupEventListeners() {
+            elements.joinForm.addEventListener('submit', joinRoom);
+            
+            // التحقق من كود الغرفة أثناء الكتابة
+            elements.roomCodeInput.addEventListener('input', function() {
+                const value = this.value;
+                if (value.length === 4 && !validateRoomCode(value)) {
+                    this.setCustomValidity('يجب أن يكون كود الغرفة مكون من 4 أرقام فقط');
+                } else {
+                    this.setCustomValidity('');
+                }
+            });
+        }
+
+        // تهيئة الصفحة
+        function initPage() {
+            console.log('تهيئة صفحة الطالب...');
+            
+            // مسح أي قيم قديمة للعبة عند تحميل الصفحة
+            console.log('التحقق من قيم localStorage:');
+            console.log('- gameStarted:', localStorage.getItem('gameStarted'));
+            console.log('- gameInProgress:', localStorage.getItem('gameInProgress'));
+            console.log('- currentQuestionIndex:', localStorage.getItem('currentQuestionIndex'));
+            console.log('- questionStartTime:', localStorage.getItem('questionStartTime'));
+            console.log('- currentRoom:', localStorage.getItem('currentRoom'));
+            console.log('- roomActive:', localStorage.getItem('roomActive'));
+            
+            // مسح البيانات القديمة تلقائياً إذا كانت اللعبة قد انتهت
+            const gameStarted = localStorage.getItem('gameStarted');
+            const gameInProgress = localStorage.getItem('gameInProgress');
+            const currentQuestionIndex = localStorage.getItem('currentQuestionIndex');
+            const questionStartTime = localStorage.getItem('questionStartTime');
+            
+            // إذا كانت هناك بيانات لعبة قديمة، اعرض رسالة وخيار المسح
+            if (gameStarted === 'true' || gameInProgress === 'true') {
+                showAlert('تم العثور على بيانات لعبة قديمة. يرجى الضغط على "مسح البيانات القديمة" للمتابعة.', 'warning');
+                
+                // إضافة زر مسح البيانات
+                const clearBtn = document.createElement('button');
+                clearBtn.className = 'btn btn-warning mt-3';
+                clearBtn.innerHTML = '<i class="fas fa-trash"></i> مسح البيانات القديمة';
+                clearBtn.onclick = clearOldGameData;
+                
+                const form = document.getElementById('join-form');
+                form.parentNode.insertBefore(clearBtn, form.nextSibling);
+            }
+            
+            setupEventListeners();
+            
+            // التركيز على حقل كود الغرفة
+            elements.roomCodeInput.focus();
+        }
+        
+        // مسح بيانات اللعبة القديمة
+        function clearOldGameData() {
+            console.log('مسح بيانات اللعبة القديمة...');
+            
+            // مسح بيانات اللعبة فقط، لا تحذف بيانات الغرفة
+            localStorage.removeItem('gameStarted');
+            localStorage.removeItem('gameInProgress');
+            localStorage.removeItem('currentQuestionIndex');
+            localStorage.removeItem('questionStartTime');
+            localStorage.removeItem('gameTeams');
+            localStorage.removeItem('currentQuestions');
+            localStorage.removeItem('gameQuestions');
+            localStorage.removeItem('selectedQuestions');
+            
+            // لا تحذف connectedTeams حتى لا تفقد الفرق المنضمة
+            
+            console.log('تم مسح بيانات اللعبة القديمة');
+            
+            // إزالة زر المسح
+            const clearBtn = document.querySelector('.btn-warning');
+            if (clearBtn) {
+                clearBtn.remove();
+            }
+            
+            showAlert('تم مسح البيانات القديمة بنجاح! يمكنك الآن الانضمام للعبة.', 'success');
+            
+            // إعادة عرض القيم بعد المسح
+            console.log('القيم بعد المسح:');
+            console.log('- gameStarted:', localStorage.getItem('gameStarted'));
+            console.log('- gameInProgress:', localStorage.getItem('gameInProgress'));
+            console.log('- currentQuestionIndex:', localStorage.getItem('currentQuestionIndex'));
+            console.log('- questionStartTime:', localStorage.getItem('questionStartTime'));
+        }
+
+        // بدء التطبيق
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>

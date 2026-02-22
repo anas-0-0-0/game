@@ -1,0 +1,605 @@
+/**
+ * 🔬 مسابقة العلوم التفاعلية - تصميم موحد لجميع الصفحات
+ * متجاوب مع الجوال والتابلت
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+
+:root {
+    /* الألوان الموحدة - مستوحاة بالكامل من شعار نافس الفعلي */
+    --navis-primary: #4A2C72;      /* الأزرق الداكن/البنفسجي من شعار نافس */
+    --navis-secondary: #3CB371;    /* الأخضر الزمردي من شعار نافس */
+    --navis-orange: #FFA500;        /* البرتقالي من شعار نافس */
+    --navis-light-blue: #ADD8E6;    /* الأزرق الفاتح من شعار نافس */
+    --navis-dark-blue: #3A235A;     /* درجة أغمق من الأساسي */
+    --navis-dark-green: #2F8D5A;    /* درجة أغمق من الثانوي */
+    
+    /* الألوان العلمية - مستوحاة بالكامل من نافس الفعلي */
+    --science-blue: #4A2C72;         /* نفس الأزرق البنفسجي من نافس */
+    --science-blue-dark: #3A235A;    /* أزرق داكن من نافس */
+    --science-green: #3CB371;        /* نفس الأخضر الزمردي من نافس */
+    --science-green-dark: #2F8D5A;   /* أخضر داكن من نافس */
+    --science-purple: #6B46C1;       /* بنفسجي من نافس */
+    --science-orange: #FFA500;        /* نفس البرتقالي من نافس */
+    --science-red: #E74C3C;           /* أحمر من نافس */
+    --science-red-dark: #C0392B;      /* أحمر داكن من نافس */
+    
+    /* الخلفيات - مستوحاة بالكامل من نافس */
+    --bg-dark-1: #3A4A6A;             /* مزيج فاتح من ألوان نافس */
+    --bg-dark-2: #4A5A7A;             /* مزيج فاتح من ألوان نافس */
+    --bg-dark-3: #5A6A8A;             /* أفتح من ألوان نافس */
+    --card-bg: rgba(74, 44, 114, 0.1);       /* مستوحى من نافس الأساسي */
+    --card-bg-2: rgba(60, 179, 113, 0.08);   /* مستوحى من نافس الثانوي */
+    --border-color: rgba(74, 44, 114, 0.2);    /* مستوحى من نافس الأساسي */
+    
+    /* الظلال - مستوحاة بالكامل من نافس */
+    --shadow-glow: 0 10px 30px rgba(74, 44, 114, 0.2);
+    --shadow-glow-green: 0 10px 30px rgba(60, 179, 113, 0.2);
+    --shadow-glow-orange: 0 10px 30px rgba(255, 165, 0, 0.2);
+    
+    /* التباعد والحدود */
+    --radius-sm: 12px;
+    --radius-md: 15px;
+    --radius-lg: 20px;
+    --radius-xl: 25px;
+    
+    /* للجوال: أحجام لمس مناسبة */
+    --touch-min: 44px;
+    --spacing-mobile: 12px;
+    --spacing-tablet: 20px;
+    --spacing-desktop: 25px;
+    
+    /* ألوان النصوص الموحدة والواضحة */
+    --text-primary: #ffffff;           /* أبيض للعناوين الرئيسية */
+    --text-secondary: rgba(255, 255, 255, 0.95); /* أبيض شبه شفاف للعناوين الثانوية */
+    --text-muted: rgba(255, 255, 255, 0.85);    /* أبيض أقل شفافية للنصوص العادية */
+    --text-light: rgba(255, 255, 255, 0.75);     /* أبيض خفيف للنصوص الثانوية */
+    
+    /* ظلال النصوص لتحسين الوضوح */
+    --text-shadow-primary: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --text-shadow-secondary: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --text-shadow-glow: 0 0 30px rgba(255, 255, 255, 0.5);
+}
+
+/* شعار نافس ووزارة التعليم */
+.logos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--radius-lg);
+    margin-bottom: 25px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    position: relative;
+    z-index: 10;
+    overflow: hidden;
+}
+
+.logos-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--navis-primary), var(--navis-secondary), var(--navis-orange));
+    box-shadow: 0 2px 10px rgba(74, 44, 114, 0.3);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.logos-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--navis-primary), var(--navis-secondary), var(--navis-orange));
+    opacity: 0.1;
+    filter: blur(2px);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px 25px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.logo-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--navis-primary), var(--navis-secondary), var(--navis-orange));
+    opacity: 0.3;
+    transition: all 0.3s ease;
+}
+
+.logo-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--navis-primary), var(--navis-secondary), var(--navis-orange));
+    opacity: 0.3;
+    transition: all 0.3s ease;
+}
+
+.logo-container:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(74, 44, 114, 0.4);
+}
+
+.logo-container:hover::before {
+    opacity: 0.6;
+    height: 4px;
+}
+
+.logo-container:hover::after {
+    opacity: 0.6;
+    height: 4px;
+}
+
+.logo-img {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.logo-img:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.3));
+}
+
+.logo-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--navis-primary);
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(74, 44, 114, 0.3);
+    transition: all 0.3s ease;
+}
+
+.logo-subtitle {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .logos-header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+    }
+    
+    .logo-container {
+        gap: 12px;
+        padding: 12px 20px;
+    }
+    
+    .logo-img {
+        height: 60px;
+    }
+    
+    .logo-title {
+        font-size: 1.1rem;
+    }
+    
+    .logo-subtitle {
+        font-size: 0.8rem;
+    }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Tajawal', sans-serif;
+}
+
+body {
+    background: #4A2C72;
+    background-attachment: fixed;
+    color: #fff;
+    min-height: 100vh;
+    padding: var(--spacing-mobile);
+    position: relative;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* تأثيرات علمية في الخلفية - مستوحاة بالكامل من نافس الفعلي */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(74, 44, 114, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(60, 179, 113, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 20%, rgba(173, 216, 230, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 60% 70%, rgba(255, 165, 0, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 70% 30%, rgba(58, 90, 138, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 30% 60%, rgba(90, 106, 138, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+body::after {
+    content: '⚛️';
+    position: fixed;
+    font-size: 200px;
+    opacity: 0.03;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    pointer-events: none;
+    z-index: 0;
+}
+
+body > .container,
+body > [class*="container"],
+body > [class*="join"],
+body > [class*="waiting"],
+body > .main-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+/* العناوين الموحدة */
+.science-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding: 25px 20px;
+    background: linear-gradient(135deg, var(--card-bg), var(--card-bg-2));
+    border-radius: var(--radius-xl);
+    backdrop-filter: blur(20px);
+    border: 2px solid var(--border-color);
+    box-shadow: var(--shadow-glow), inset 0 0 40px rgba(60, 179, 113, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.science-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--navis-primary), var(--navis-secondary), var(--navis-orange));
+    box-shadow: 0 0 20px rgba(74, 44, 114, 0.5);
+}
+
+.science-header h1 {
+    color: var(--text-primary);
+    font-size: 2.2em;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-shadow: var(--text-shadow-primary);
+    position: relative;
+    z-index: 1;
+}
+
+.science-header p {
+    color: var(--text-secondary);
+    font-size: 1.1em;
+    font-weight: 500;
+    text-shadow: var(--text-shadow-secondary);
+    position: relative;
+    z-index: 1;
+}
+
+/* أنماط النصوص الموحدة لجميع الصفحات */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+    text-shadow: var(--text-shadow-primary);
+}
+
+h1 { font-size: 2.2em; font-weight: 700; }
+h2 { font-size: 1.8em; font-weight: 700; }
+h3 { font-size: 1.4em; font-weight: 700; }
+h4 { font-size: 1.2em; font-weight: 600; }
+h5 { font-size: 1.1em; font-weight: 600; }
+h6 { font-size: 1em; font-weight: 600; }
+
+p, span, div, label {
+    color: var(--text-muted);
+    text-shadow: var(--text-shadow-secondary);
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 600;
+    text-shadow: var(--text-shadow-secondary);
+}
+
+a:hover {
+    color: var(--text-primary);
+}
+
+/* نصوص خاصة بالبطاقات والأزرار */
+.card h1, .card h2, .card h3,
+.btn, .btn-primary, .btn-success, .btn-danger {
+    color: var(--text-primary);
+    text-shadow: var(--text-shadow-primary);
+}
+
+.card p, .card span,
+.btn-secondary, .btn-outline {
+    color: var(--text-secondary);
+    text-shadow: var(--text-shadow-secondary);
+}
+
+/* نصوص خفيفة */
+.text-muted, .hint, .small {
+    color: var(--text-light) !important;
+    text-shadow: var(--text-shadow-secondary);
+}
+
+/* تحسين القراءة على الخلفيات الداكنة */
+.form-control, .form-group label {
+    color: var(--text-primary) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.form-control::placeholder {
+    color: var(--text-light) !important;
+}
+
+.science-header h1,
+.science-header h2 {
+    background: linear-gradient(135deg, var(--navis-primary), var(--navis-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    font-size: clamp(1.4rem, 5vw, 2.5rem);
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+}
+
+.science-header p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+    margin: 0;
+}
+
+/* الأزرار الموحدة - مستوحاة بالكامل من نافس الفعلي */
+.btn-science,
+.science-btn {
+    background: linear-gradient(135deg, var(--navis-primary), var(--navis-dark-blue));
+    color: white !important;
+    border: none;
+    padding: 14px 28px;
+    border-radius: var(--radius-md);
+    font-size: clamp(15px, 4vw, 17px);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: var(--touch-min);
+    box-shadow: 0 5px 15px rgba(74, 44, 114, 0.3);
+    text-decoration: none;
+}
+
+.btn-science:hover,
+.science-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(74, 44, 114, 0.5);
+}
+
+.btn-science-success {
+    background: linear-gradient(135deg, var(--navis-secondary), var(--navis-dark-green));
+    box-shadow: 0 5px 15px rgba(60, 179, 113, 0.3);
+}
+
+.btn-science-success:hover {
+    box-shadow: 0 10px 25px rgba(60, 179, 113, 0.5);
+}
+
+.btn-science-outline {
+    background: transparent;
+    border: 2px solid var(--navis-primary);
+    color: var(--navis-primary) !important;
+}
+
+.btn-science-outline:hover {
+    background: linear-gradient(135deg, var(--navis-primary), var(--navis-dark-blue));
+    color: white !important;
+}
+
+.btn-science-danger {
+    background: linear-gradient(135deg, var(--science-red), var(--science-red-dark));
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+}
+
+.btn-science:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* النماذج الموحدة */
+.form-group-science {
+    margin-bottom: 22px;
+    text-align: right;
+}
+
+/* النماذج الموحدة - مستوحاة من نافس الفعلي */
+.form-group-science label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--navis-primary);
+    font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+}
+
+.form-group-science input,
+.form-group-science select {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: rgba(74, 44, 114, 0.1);
+    color: white;
+    font-size: 16px; /* يمنع التكبير التلقائي على iOS */
+    transition: all 0.3s ease;
+    min-height: var(--touch-min);
+}
+
+.form-group-science input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.form-group-science input:focus {
+    outline: none;
+    border-color: var(--navis-primary);
+    background: rgba(74, 44, 114, 0.2);
+    box-shadow: 0 0 20px rgba(74, 44, 114, 0.4);
+}
+
+/* البطاقات الموحدة */
+.science-card {
+    background: linear-gradient(135deg, var(--card-bg), var(--card-bg-2));
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 15px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.science-card:hover {
+    box-shadow: var(--shadow-glow);
+}
+
+/* حاويات الصفحات (انضم، انتظار) */
+.join-container,
+.waiting-room {
+    background: linear-gradient(135deg, var(--card-bg), var(--card-bg-2));
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 25px;
+    max-width: 500px;
+    width: 100%;
+    margin: 0 auto;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-glow);
+}
+
+.waiting-room {
+    max-width: 800px;
+}
+
+/* الروابط - مستوحاة من نافس */
+.science-link {
+    color: var(--navis-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.science-link:hover {
+    color: var(--navis-secondary);
+}
+
+/* الأنيميشن المشترك */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+/* ========== متجاوب: تابلت ========== */
+@media (min-width: 769px) and (max-width: 1024px) {
+    body {
+        padding: var(--spacing-tablet);
+    }
+    
+    .science-header {
+        padding: 30px 25px;
+    }
+}
+
+/* ========== متجاوب: جوال ========== */
+@media (max-width: 768px) {
+    body {
+        padding: var(--spacing-mobile);
+    }
+    
+    body::after {
+        font-size: 120px;
+    }
+    
+    .science-header {
+        padding: 20px 15px;
+        margin-bottom: 20px;
+    }
+    
+    .science-header h1,
+    .science-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .btn-science,
+    .science-btn {
+        padding: 14px 22px;
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+/* ========== متجاوب: جوال صغير ========== */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .science-header {
+        padding: 18px 12px;
+        margin-bottom: 18px;
+    }
+    
+    .science-header h1,
+    .science-header h2 {
+        font-size: 1.35rem;
+    }
+}

@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>النتائج - مبادرة نافس</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles-common.css">
+    <style>
+        /* تصميم حديث ومرتب */
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--navis-primary) 20%, transparent) 0%, transparent 45%),
+                        radial-gradient(circle at 80% 75%, color-mix(in srgb, var(--navis-secondary) 18%, transparent) 0%, transparent 50%),
+                        linear-gradient(135deg, var(--bg-dark-1) 0%, var(--bg-dark-2) 55%, var(--bg-dark-3) 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .results-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .results-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, color-mix(in srgb, var(--navis-primary) 10%, transparent) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .results-header {
+            background: linear-gradient(135deg, var(--navis-primary), var(--navis-dark-blue));
+            color: white;
+            padding: 40px 30px;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .results-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .results-header h1 {
+            font-size: 3em;
+            font-weight: 800;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            letter-spacing: 1px;
+        }
+
+        .results-header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .user-info {
+            background: rgba(0, 0, 0, 0.22);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            border-left: 5px solid var(--navis-primary);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .user-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .user-detail {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-detail i {
+            font-size: 1.5em;
+            color: var(--navis-primary);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: var(--card-bg);
+        }
+
+        .user-detail-content h3 {
+            font-size: 0.9em;
+            color: var(--text-light);
+            margin: 0;
+        }
+
+        .user-detail-content p {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.22);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--navis-primary);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, color-mix(in srgb, var(--navis-primary) 8%, transparent) 0%, transparent 70%);
+            animation: rotate 25s linear infinite;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
+        }
+
+        .stat-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--navis-primary), var(--navis-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 1em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* تصميم الجداول الحديث */
+        .teams-table {
+            background: rgba(0, 0, 0, 0.22);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            margin: 40px 0;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            background: rgba(0, 0, 0, 0.22);
+            border-radius: 20px;
+            padding: 20px 25px;
+            margin: 30px 0;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            border-left: 6px solid var(--navis-primary);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .filter-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, color-mix(in srgb, var(--navis-primary) 10%, transparent), color-mix(in srgb, var(--navis-secondary) 8%, transparent));
+            opacity: 0.5;
+        }
+
+        .filter-bar .left {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .filter-bar label {
+            font-weight: 700;
+            color: var(--text-secondary);
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-bar select,
+        .filter-bar input {
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            outline: none;
+            min-width: 220px;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            background: #fff;
+            color: #1a1a1a;
+            position: relative;
+            z-index: 1;
+        }
+
+        .filter-bar select option {
+            background: #fff;
+            color: #1a1a1a;
+        }
+
+        .filter-bar input.room-code {
+            min-width: 180px;
+            width: 180px;
+        }
+
+        .filter-bar select:focus,
+        .filter-bar input:focus {
+            border-color: var(--navis-primary);
+            box-shadow: 0 0 0 4px color-mix(in srgb, var(--navis-primary) 25%, transparent);
+            transform: translateY(-1px);
+        }
+
+        .table-columns {
+            display: grid;
+            grid-template-columns: 60px 1fr 110px;
+            gap: 15px;
+            align-items: center;
+            padding: 14px 20px;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+
+        .team-percentage {
+            font-weight: 800;
+            color: var(--navis-secondary);
+            text-align: center;
+            font-size: 1.3em;
+        }
+
+        .team-leader {
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.95em;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, var(--navis-primary), var(--navis-dark-blue));
+            color: white;
+            padding: 25px 35px;
+            font-size: 1.5em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .table-content {
+            padding: 25px;
+        }
+
+        .team-row {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: 60px 1fr 110px;
+            gap: 20px;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .team-row.my-team {
+            border-color: color-mix(in srgb, var(--navis-primary) 70%, transparent);
+            box-shadow: var(--shadow-glow);
+            background: linear-gradient(135deg, color-mix(in srgb, var(--navis-primary) 14%, transparent), color-mix(in srgb, var(--navis-secondary) 10%, transparent));
+        }
+
+        .team-row:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+            border-color: var(--navis-primary);
+        }
+
+        .team-rank {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.2em;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .team-rank.gold {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .team-rank.silver {
+            background: linear-gradient(135deg, #C0C0C0, #A8A8A8);
+            box-shadow: 0 4px 15px rgba(192, 192, 192, 0.3);
+        }
+
+        .team-rank.bronze {
+            background: linear-gradient(135deg, #CD7F32, #B87333);
+            box-shadow: 0 4px 15px rgba(205, 127, 50, 0.3);
+        }
+
+        .team-name {
+            font-weight: 700;
+            color: var(--text-secondary);
+            font-size: 1.2em;
+            line-height: 1.4;
+        }
+
+        .team-score {
+            font-weight: 700;
+            color: var(--navis-primary);
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        .team-total-percentage {
+            font-weight: 600;
+            color: var(--navis-secondary);
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        .team-questions {
+            color: var(--text-light);
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .team-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .badge-excellent {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .badge-good {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+        }
+
+        .badge-excellent {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .badge-average {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--navis-primary), var(--navis-secondary));
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        /* تصميم المجموعات */
+        .team-group {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--navis-primary);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .group-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            border-left: 4px solid var(--navis-primary);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .group-details::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+            animation: slideIn 1s ease-out;
+        }
+
+        .group-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 1em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .group-score {
+            font-weight: 700;
+            color: var(--navis-primary);
+            font-size: 1.2em;
+            position: relative;
+            z-index: 1;
+            animation: pulse 2s infinite;
+        }
+
+        .group-score::before {
+            content: '📊';
+            position: absolute;
+            top: -25px;
+            right: -10px;
+            font-size: 1em;
+            opacity: 0.7;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+            to {
+                opacity: 0.3;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-5px) rotate(5deg);
+            }
+        }
+
+        /* تصميم الأزرار */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--navis-primary), var(--navis-dark-blue));
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow-glow);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-export {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .btn-print {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+        }
+
+        /* تصميم المراكز الثلاثة الأولى (حديث) */
+        .team-row.first-place,
+        .team-row.second-place,
+        .team-row.third-place {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-row.first-place {
+            border-color: color-mix(in srgb, #FFD700 55%, rgba(255,255,255,0.14));
+            background: linear-gradient(135deg,
+                color-mix(in srgb, #FFD700 14%, transparent),
+                color-mix(in srgb, var(--navis-primary) 10%, transparent)
+            );
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .team-row.second-place {
+            border-color: color-mix(in srgb, #C0C0C0 55%, rgba(255,255,255,0.14));
+            background: linear-gradient(135deg,
+                color-mix(in srgb, #C0C0C0 12%, transparent),
+                color-mix(in srgb, var(--navis-secondary) 8%, transparent)
+            );
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+        }
+
+        .team-row.third-place {
+            border-color: color-mix(in srgb, #CD7F32 55%, rgba(255,255,255,0.14));
+            background: linear-gradient(135deg,
+                color-mix(in srgb, #CD7F32 12%, transparent),
+                rgba(255, 255, 255, 0.05)
+            );
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.20);
+        }
+
+        .team-row.first-place::before,
+        .team-row.second-place::before,
+        .team-row.third-place::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.7;
+            background: radial-gradient(circle at 20% 10%, rgba(255,255,255,0.14), transparent 55%);
+        }
+
+        .team-row.first-place::after,
+        .team-row.second-place::after,
+        .team-row.third-place::after {
+            content: '';
+            position: absolute;
+            top: -80px;
+            left: -80px;
+            width: 180px;
+            height: 180px;
+            border-radius: 999px;
+            filter: blur(1px);
+            opacity: 0.35;
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(255,255,255,0.22), transparent 65%);
+        }
+
+        .first-place-bar .progress-fill {
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+        }
+
+        .second-place-bar .progress-fill {
+            background: linear-gradient(90deg, #C0C0C0, #A8A8A8);
+        }
+
+        .third-place-bar .progress-fill {
+            background: linear-gradient(90deg, #CD7F32, #B87333);
+        }
+
+        .first-place .team-rank {
+            font-size: 1.8em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .second-place .team-rank {
+            font-size: 1.6em;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .third-place .team-rank {
+            font-size: 1.4em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* تصميم متجاوب */
+        @media (max-width: 768px) {
+            .results-container {
+                padding: 10px;
+            }
+
+            .team-row {
+                grid-template-columns: 40px 1fr 70px;
+                gap: 10px;
+                padding: 15px;
+            }
+
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .user-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- شعار نافس ووزارة التعليم -->
+    <div class="logos-header">
+        <div class="logo-container">
+            <img src="نافس.png" alt="شعار نافس" class="logo-img">
+            <div>
+                <h3 class="logo-title">مبادرة نافس</h3>
+                <p class="logo-subtitle">National Olympiad for Innovation & Science</p>
+            </div>
+        </div>
+        <div class="logo-container">
+            <div style="text-align: left;">
+                <h3 class="logo-title">وزارة التعليم</h3>
+                <p class="logo-subtitle">Ministry of Education</p>
+            </div>
+            <img src="وزاره التعليم.png" alt="شعار وزارة التعليم" class="logo-img">
+        </div>
+    </div>
+
+    <div class="results-container">
+        <!-- رأس الصفحة -->
+        <div class="results-header">
+            <h1>🏆 نتائج المسابقة</h1>
+            <p>عرض نتائج الفرق المشاركة في مسابقة العلوم التفاعلية</p>
+        </div>
+
+        <div class="filter-bar">
+            <div class="left">
+                <label for="session-select">المجموعة (كود الغرفة)</label>
+                <select id="session-select"></select>
+                <label for="group-select">لوحة المتصدرين</label>
+                <select id="group-select">
+                    <option value="overall" selected>الإجمالي</option>
+                    <option value="all">الكل (نسبة كل المجموعات)</option>
+                    <option value="group1">المجموعة 1</option>
+                    <option value="group2">المجموعة 2</option>
+            }
+
+            .team-row.first-place::after,
+            .team-row.second-place::after,
+            .team-row.third-place::after {
+                content: '';
+                position: absolute;
+                top: -80px;
+                left: -80px;
+                width: 180px;
+                height: 180px;
+                border-radius: 999px;
+                filter: blur(1px);
+                opacity: 0.35;
+                pointer-events: none;
+                background: radial-gradient(circle, rgba(255,255,255,0.22), transparent 65%);
+            }
+
+            .first-place-bar .progress-fill {
+                background: linear-gradient(90deg, #FFD700, #FFA500);
+            }
+
+            .second-place-bar .progress-fill {
+                background: linear-gradient(90deg, #C0C0C0, #A8A8A8);
+            }
+
+            .third-place-bar .progress-fill {
+                background: linear-gradient(90deg, #CD7F32, #B87333);
+            }
+
+            .first-place .team-rank {
+                font-size: 1.8em;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+
+            .second-place .team-rank {
+                font-size: 1.6em;
+                text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+            }
+
+            .third-place .team-rank {
+                font-size: 1.4em;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            }
+
+            @keyframes bounce {
+                0%, 20%, 50%, 80%, 100% {
+                    transform: translateY(0);
+                }
+                40% {
+                    transform: translateY(-10px);
+                }
+                60% {
+                    transform: translateY(-5px);
+                }
+            }
+
+            /* تصميم متجاوب */
+            @media (max-width: 768px) {
+                .results-container {
+                    padding: 10px;
+                }
+
+                .team-row {
+                    grid-template-columns: 40px 1fr 70px;
+                    gap: 10px;
+                    padding: 15px;
+                }
+
+                .stats-overview {
+                    grid-template-columns: 1fr;
+                }
+
+                .user-details {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- شعار نافس ووزارة التعليم -->
+        <div class="logos-header">
+            <div class="logo-container">
+                <img src="نافس.png" alt="شعار نافس" class="logo-img">
+                <div>
+                    <h3 class="logo-title">مبادرة نافس</h3>
+                    <p class="logo-subtitle">National Olympiad for Innovation & Science</p>
+                </div>
+            </div>
+            <div class="logo-container">
+                <div style="text-align: left;">
+                    <h3 class="logo-title">وزارة التعليم</h3>
+                    <p class="logo-subtitle">Ministry of Education</p>
+                </div>
+                <img src="وزاره التعليم.png" alt="شعار وزارة التعليم" class="logo-img">
+            </div>
+        </div>
+
+        <div class="results-container">
+            <!-- رأس الصفحة -->
+            <div class="results-header">
+                <h1>🏆 نتائج المسابقة</h1>
+                <p>عرض نتائج الفرق المشاركة في مسابقة العلوم التفاعلية</p>
+            </div>
+
+            <div class="filter-bar">
+                <div class="left">
+                    <label for="session-select">المجموعة (كود الغرفة)</label>
+                    <select id="session-select"></select>
+                    <label for="group-select">لوحة المتصدرين</label>
+                    <select id="group-select">
+                        <option value="overall" selected>الإجمالي</option>
+                        <option value="all">الكل (نسبة كل المجموعات)</option>
+                        <option value="group1">المجموعة 1</option>
+                        <option value="group2">المجموعة 2</option>
+                        <option value="group3">المجموعة 3</option>
+                        <option value="group4">المجموعة 4</option>
+                        <option value="group5">المجموعة 5</option>
+                        <option value="group6">المجموعة 6</option>
+                        <option value="group7">المجموعة 7</option>
+                        <option value="group8">المجموعة 8</option>
+                        <option value="group9">المجموعة 9</option>
+                        <option value="group10">المجموعة 10</option>
+                        <option value="group11">المجموعة 11</option>
+                        <option value="group12">المجموعة 12</option>
+
+            @keyframes glow {
+                from { filter: drop-shadow(0 0 10px rgba(74, 44, 114, 0.5)); }
+                to { filter: drop-shadow(0 0 20px rgba(60, 179, 113, 0.8)); }
+            }
+
+            .podium-container {
+                display: flex;
+                justify-content: center;
+                align-items: flex-end;
+                gap: 30px;
+                margin: 20px 0;
+                perspective: 1000px;
+            }
+
+            .podium-place {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                animation: slideUp 0.8s ease-out forwards;
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            .podium-place.first { animation-delay: 0.2s; }
+            .podium-place.second { animation-delay: 0.4s; }
+            .podium-place.third { animation-delay: 0.6s; }
+
+            @keyframes slideUp {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .medal {
+                font-size: 3em;
+                margin-bottom: 10px;
+                animation: bounce 1s ease-in-out infinite;
+                filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            }
+
+            @keyframes bounce {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+
+            .team-name {
+                font-size: 1.2em;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-bottom: 5px;
+                max-width: 150px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .team-score {
+                font-size: 1.1em;
+                font-weight: 700;
+                color: var(--navis-secondary);
+                margin-bottom: 15px;
+            }
+
+            .podium-block {
+                background: linear-gradient(135deg, var(--navis-primary), var(--navis-dark-blue));
+                color: white;
+                font-weight: 700;
+                padding: 15px 20px;
+                border-radius: 10px 10px 0 0;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .podium-block::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+                animation: shine 3s infinite;
+            }
+
+            @keyframes shine {
+                0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+                100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+            }
+
+            .podium-place.first .podium-block {
+                height: 120px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5em;
+                background: linear-gradient(135deg, #FFD700, #FFA500);
+            }
+
+            .podium-place.second .podium-block {
+                height: 90px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.3em;
+                background: linear-gradient(135deg, #C0C0C0, #808080);
+            }
+
+            .podium-place.third .podium-block {
+                height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.1em;
+                background: linear-gradient(135deg, #CD7F32, #8B4513);
+            }
+
+            @media (max-width: 768px) {
+                .podium-container {
+                    gap: 15px;
+                }
+                
+                .podium-place {
+                    transform: scale(0.8);
+                }
+                
+            flex-wrap: wrap;
+        }
+
+        .comparison-controls label {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .comparison-controls select {
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            color: #1a1a1a;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 500;
+        }
+
+        .comparison-controls select option {
+            background: #fff;
+            color: #1a1a1a;
+        }
+
+        .comparison-controls select:focus {
+            outline: none;
+            border-color: var(--navis-primary);
+            box-shadow: 0 0 15px rgba(74, 44, 114, 0.3);
+        }
+
+        .comparison-controls span {
+            color: var(--text-secondary);
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+
+        .comparison-results {
+            display: grid;
+            gap: 30px;
+        }
+
+        .comparison-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: transform 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .summary-card h3 {
+            color: var(--text-secondary);
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+
+        .summary-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--navis-secondary);
+        }
+
+        .change-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(74, 44, 114, 0.1));
+            border: 1px solid rgba(74, 44, 114, 0.3);
+        }
+
+        .change-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .change-indicator {
+            font-size: 2em;
+        }
+
+        .change-card.positive .change-value {
+            color: #28a745;
+        }
+
+        .change-card.negative .change-value {
+            color: #dc3545;
+        }
+
+        .team-comparison {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .team-comparison table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .team-comparison th,
+        .team-comparison td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .team-comparison th {
+            background: rgba(74, 44, 114, 0.2);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .team-comparison td {
+            color: var(--text-secondary);
+        }
+
+        .improvement {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .decline {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .neutral {
+            color: #ffc107;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .comparison-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comparison-btn {
+            background: linear-gradient(135deg, var(--navis-secondary), var(--navis-dark-green));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comparison-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(60, 179, 113, 0.4);
+        }
+
+        /* فلترة وجدول */
+        .filter-bar {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-bar .left {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .filter-bar select {
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            color: #1a1a1a;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .filter-bar select option {
+            background: #fff;
+            color: #1a1a1a;
+        }
+
+        .filter-bar select:focus {
+            outline: none;
+            border-color: var(--navis-primary);
+            box-shadow: 0 0 10px rgba(74, 44, 114, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--navis-primary), var(--navis-dark-blue));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(74, 44, 114, 0.4);
+        }
+
+        .comparison-btn {
+            background: linear-gradient(135deg, var(--navis-secondary), var(--navis-dark-green));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comparison-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(60, 179, 113, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- شعار نافس ووزارة التعليم -->
+    <div class="logos-header">
+        <div class="logo-container">
+            <img src="نافس.png" alt="شعار نافس" class="logo-img">
+            <div>
+                <h3 class="logo-title">مبادرة نافس</h3>
+                <p class="logo-subtitle">National Olympiad for Innovation & Science</p>
+            </div>
+        </div>
+        <div class="logo-container">
+            <div style="text-align: left;">
+                <h3 class="logo-title">وزارة التعليم</h3>
+                <p class="logo-subtitle">Ministry of Education</p>
+            </div>
+            <img src="وزاره التعليم.png" alt="شعار وزارة التعليم" class="logo-img">
+        </div>
+    </div>
+
+    <div class="results-container">
+        <!-- رأس الصفحة -->
+        <div class="results-header">
+            <h1>🏆 نتائج المسابقة</h1>
+            <p>عرض نتائج الفرق المشاركة في مسابقة العلوم التفاعلية</p>
+        </div>
+
+        <div class="filter-bar">
+            <div class="left">
+                <label for="session-select">المجموعة (كود الغرفة)</label>
+                <select id="session-select"></select>
+                <label for="group-select">لوحة المتصدرين</label>
+                <select id="group-select">
+                    <option value="overall" selected>الإجمالي</option>
+                    <option value="all">الكل (نسبة كل المجموعات)</option>
+                    <option value="group1">المجموعة 1</option>
+                    <option value="group2">المجموعة 2</option>
+                    <option value="group3">المجموعة 3</option>
+                    <option value="group4">المجموعة 4</option>
+                    <option value="group5">المجموعة 5</option>
+                    <option value="group6">المجموعة 6</option>
+                    <option value="group7">المجموعة 7</option>
+                    <option value="group8">المجموعة 8</option>
+                    <option value="group9">المجموعة 9</option>
+                    <option value="group10">المجموعة 10</option>
+                    <option value="group11">المجموعة 11</option>
+                    <option value="group12">المجموعة 12</option>
+                </select>
+            </div>
+            <div>
+                <button class="btn" id="refresh-btn" type="button">تحديث</button>
+            </div>
+        </div>
+
+        <!-- إحصائيات عامة -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-number" id="total-teams">12</div>
+                <div class="stat-label">إجمالي الفرق</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-number" id="avg-score">85%</div>
+                <div class="stat-label">متوسط النقاط</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-number" id="total-questions">60</div>
+                <div class="stat-label">إجمالي الأسئلة</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-number" id="avg-time">45د</div>
+                <div class="stat-label">متوسط الوقت</div>
+            </div>
+        </div>
+
+        <!-- جدول نتائج الفرق المشاركة -->
+        <div class="teams-table-section">
+            <div class="section-header">
+                <h2 class="section-title">📊 نتائج الفرق المشاركة</h2>
+                <a href="comparison.html" class="btn comparison-btn" style="background: linear-gradient(135deg, var(--navis-secondary), var(--navis-dark-green)); display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; text-decoration: none;">
+                    <i class="fas fa-chart-line"></i>
+                    مقارنة الأداء
+                </a>
+            </div>
+            <div class="teams-table">
+                <div class="table-header">
+                    🏆 نتائج الفرق المشاركة
+                </div>
+                <div class="table-content" id="teams-table-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="firebase-sync.js"></script>
+    <script>
+        function getCurrentRoomCode() {
+            const fromInput = (document.getElementById('room-code-input')?.value || '').trim();
+            if (fromInput) return fromInput;
+            return localStorage.getItem('currentRoom') || localStorage.getItem('teacherRoomCode') || '';
+        }
+
+        function setRoomCodeInputValue(roomCode) {
+            const input = document.getElementById('room-code-input');
+            if (!input) return;
+            const value = String(roomCode || '').trim();
+            if (value && input.value.trim() !== value) input.value = value;
+        }
+
+        // الحصول على بيانات المستخدم من localStorage
+        function getUserData() {
+            const name = localStorage.getItem('myName') || 'طالب';
+            const role = localStorage.getItem('userRole') || 'طالب';
+            const team = localStorage.getItem('myTeamName') || 'فريق النجوم';
+            const score = localStorage.getItem('myScore') || '95';
+            const percentage = localStorage.getItem('myPercentage') || '95';
+            const rank = localStorage.getItem('myRank') || '1';
+            
+            return { name, role, team, score, percentage, rank };
+        }
+
+        function getResultsHistory() {
+            try {
+                const raw = localStorage.getItem('gameResultsHistory');
+                if (!raw) return [];
+                const parsed = JSON.parse(raw);
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        async function getResultsHistoryUniversal() {
+            const roomCode = getCurrentRoomCode();
+            if (typeof FirebaseSync !== 'undefined' && FirebaseSync.isEnabled && FirebaseSync.isEnabled() && roomCode) {
+                try {
+                    if (FirebaseSync.getResultsHistoryFromServer) {
+                        const serverHistory = await FirebaseSync.getResultsHistoryFromServer(roomCode, 50);
+                        if (Array.isArray(serverHistory) && serverHistory.length) return serverHistory;
+                    }
+                } catch (e) {}
+            }
+            return getResultsHistory();
+        }
+
+        function getActiveResultsSession(historyOverride) {
+            const history = Array.isArray(historyOverride) ? historyOverride : getResultsHistory();
+            if (history.length === 0) return null;
+            const preferredId = localStorage.getItem('lastResultsSessionId');
+            if (preferredId) {
+                const found = history.find(s => s && s.id === preferredId);
+                if (found) return found;
+            }
+            return history[0];
+        }
+
+        function formatSessionLabel(session) {
+            const room = session && session.roomCode ? String(session.roomCode) : '----';
+            const when = session && session.createdAt ? new Date(session.createdAt) : null;
+            const whenText = when && !isNaN(when.getTime())
+                ? when.toLocaleString('ar-SA', { hour12: true })
+                : '';
+            return `مجموعة ${room}${whenText ? ' - ' + whenText : ''}`;
+        }
+
+        async function setupSessionSelector() {
+            const select = document.getElementById('session-select');
+            if (!select) return;
+
+            const history = await getResultsHistoryUniversal();
+            const active = getActiveResultsSession(history);
+
+            if (!history.length) {
+                select.innerHTML = '<option value="">لا توجد نتائج محفوظة</option>';
+                return;
+            }
+
+            select.innerHTML = history.map(s => {
+                const label = formatSessionLabel(s);
+                const selected = active && s.id === active.id ? 'selected' : '';
+                return `<option value="${s.id}" ${selected}>${label}</option>`;
+            }).join('');
+
+            select.addEventListener('change', function() {
+                const id = this.value;
+                if (id) localStorage.setItem('lastResultsSessionId', id);
+                refreshResults();
+            });
+        }
+
+        // قراءة بيانات اللعبة الفعلية (أسماء الفرق كما أدخلها الطلاب/المعلم + النقاط)
+        function loadGameData(historyOverride) {
+            try {
+                // أولوية: أرشيف النتائج (جلسات متعددة) — نستخدم أسماء الفرق المحفوظة وعدد الأسئلة لحساب النسبة
+                const session = getActiveResultsSession(historyOverride);
+                if (session && session.teams) {
+                    const totalQuestions = Number(session.totalQuestions) || 0;
+                    const teams = Array.isArray(session.teams) ? session.teams : Object.values(session.teams);
+                    if (teams && teams.length) {
+                        return teams.map(t => ({ ...t, totalQuestions: totalQuestions || Number(t.totalQuestions) || 0 }));
+                    }
+                }
+
+                // محاولة قراءة البيانات من localStorage
+                const gameData = localStorage.getItem('gameData');
+                if (gameData) {
+                    const data = JSON.parse(gameData);
+                    const totalQ = Number(data.totalQuestions) || 0;
+                    const list = data.teams || [];
+                    return list.map(t => ({ ...t, totalQuestions: totalQ || Number(t.totalQuestions) || 0 }));
+                }
+
+                // المصدر الفعلي المستخدم في صفحات المعلم/المراقبة
+                const gameTeams = localStorage.getItem('gameTeams');
+                if (gameTeams) {
+                    const parsed = JSON.parse(gameTeams);
+                    const list = Array.isArray(parsed) ? parsed : Object.values(parsed);
+                    return list;
+                }
+                
+                const teamsData = localStorage.getItem('teamsData');
+                if (teamsData) return JSON.parse(teamsData);
+                
+                const teacherData = localStorage.getItem('teacherGameData');
+                if (teacherData) return JSON.parse(teacherData).teams || [];
+                
+                return getDefaultData();
+            } catch (error) {
+                console.error('خطأ في قراءة بيانات اللعبة:', error);
+                return getDefaultData();
+            }
+        }
+
+        // بيانات افتراضية إذا لم توجد بيانات حقيقية
+        function getDefaultData() {
+            return [
+                { 
+                    rank: 1, 
+                    name: "فريق النجوم", 
+                    score: 95, 
+                    percentage: 95, 
+                    questions: 57, 
+                    totalQuestions: 60, 
+                    badge: "ممتاز",
+                    group1Score: 38,
+                    group2Score: 57,
+                    isMyTeam: false
+                },
+                { 
+                    rank: 2, 
+                    name: "فريق العلماء", 
+                    score: 92, 
+                    percentage: 92, 
+                    questions: 55, 
+                    totalQuestions: 60, 
+                    badge: "ممتاز",
+                    group1Score: 37,
+                    group2Score: 83,
+                    isMyTeam: false
+                },
+                { 
+                    rank: 3, 
+                    name: "فريق المبتكرون", 
+                    score: 88, 
+                    percentage: 88, 
+                    questions: 53, 
+                    totalQuestions: 60, 
+                    badge: "جيد جداً",
+                    group1Score: 35,
+                    group2Score: 79,
+                    isMyTeam: false
+                }
+            ];
+        }
+
+        // تحويل بيانات اللعبة إلى تنسيق النتائج — أسماء الفرق كما يكتبها الطلاب + النسبة من النقاط وعدد الأسئلة
+        async function formatGameData(rawData) {
+            if (!rawData || rawData.length === 0) {
+                return getDefaultData();
+            }
+
+            const sortedData = rawData
+                .map((t) => {
+                    const totalQuestions = Number(t.totalQuestions ?? t.total ?? t.questionsTotal ?? 60);
+                    const correctAnswers = Number(t.correctAnswers ?? t.correct ?? t.answersCorrect ?? 0);
+                    const score = Number(t.score ?? t.points ?? 0);
+                    const name = (t.name || t.teamName || '').trim() || `فريق ${t.id || ''}`.trim() || 'فريق';
+                    const leader = t.leader ?? t.leaderName ?? '';
+                    return { ...t, name, leader, totalQuestions, correctAnswers, score };
+                })
+                .sort((a, b) => b.score - a.score);
+
+            const maxScore = sortedData.reduce((m, t) => Math.max(m, Number(t.score || 0)), 0);
+            const maxPossibleFromTotal = (n) => (n > 0 ? n * 3 : 0); // أقصى 3 نقاط لكل سؤال في اللعبة
+            
+            const formatted = [];
+            for (let index = 0; index < sortedData.length; index++) {
+                const team = sortedData[index];
+                const score = Number(team.score ?? 0);
+                const totalQuestions = Number(team.totalQuestions ?? 0) || 0;
+                const hasQA = (team.correctAnswers ?? 0) > 0 && (team.totalQuestions ?? 0) > 0;
+                let percentage;
+                if (hasQA) {
+                    percentage = Math.min(100, Math.max(0, Math.round((Number(team.correctAnswers) / Number(team.totalQuestions)) * 100)));
+                } else if (totalQuestions > 0 && maxPossibleFromTotal(totalQuestions) > 0) {
+                    percentage = Math.min(100, Math.max(0, Math.round((score / maxPossibleFromTotal(totalQuestions)) * 100)));
+                } else {
+                    percentage = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
+                }
+                
+                const groupPercentages = await calculateGroupScores(team);
+                
+                formatted.push({
+                    rank: index + 1,
+                    name: team.name || `فريق ${index + 1}`,
+                    leader: team.leader || '',
+                    score: score,
+                    percentage: percentage,
+                    questions: hasQA ? Number(team.correctAnswers ?? 0) : null,
+                    totalQuestions: hasQA ? Number(team.totalQuestions ?? 0) : totalQuestions || null,
+                    badge: getBadge(percentage),
+                    ...groupPercentages,
+                    isMyTeam: checkIfMyTeam(team)
+                });
+            }
+            return formatted;
+        }
+
+        // حساب نسب المجموعات بناءً على الإجابات الفعلية (صحيحة 100%)
+        async function calculateGroupScores(team) {
+            // تحديد المجموعات بناءً على 195 سؤال مقسمة إلى 12 مجموعة
+            const groupRanges = [
+                { name: 'group1', start: 1,   end: 16 },   // 16 سؤال
+                { name: 'group2', start: 17,  end: 32 },   // 16 سؤال
+                { name: 'group3', start: 33,  end: 49 },   // 17 سؤال
+                { name: 'group4', start: 50,  end: 66 },   // 17 سؤال
+                { name: 'group5', start: 67,  end: 83 },   // 17 سؤال
+                { name: 'group6', start: 84,  end: 100 },  // 17 سؤال
+                { name: 'group7', start: 101, end: 117 },  // 17 سؤال
+                { name: 'group8', start: 118, end: 134 },  // 17 سؤال
+                { name: 'group9', start: 135, end: 152 },  // 18 سؤال
+                { name: 'group10', start: 153, end: 170 }, // 18 سؤال
+                { name: 'group11', start: 171, end: 188 }, // 18 سؤال
+                { name: 'group12', start: 189, end: 195 }  // 7 أسئلة
+            ];
+
+            // جلب إجابات هذا الفريق من Firebase أو localStorage
+            let answers = [];
+            const roomCode = getCurrentRoomCode();
+            if (typeof FirebaseSync !== 'undefined' && FirebaseSync.isEnabled && FirebaseSync.isEnabled() && roomCode) {
+                try {
+                    // محاولة جلب الإجابات من Firebase
+                    answers = await new Promise((resolve) => {
+                        if (typeof FirebaseSync.getStudentAnswersFromServer === 'function') {
+                            FirebaseSync.getStudentAnswersFromServer(roomCode).then(data => {
+                                resolve(Array.isArray(data) ? data : []);
+                            }).catch(() => resolve([]));
+                        } else {
+                            resolve([]);
+                        }
+                    });
+                } catch (e) {}
+            }
+            if (!answers.length) {
+                // Fallback: localStorage
+                answers = JSON.parse(localStorage.getItem('studentAnswers') || '[]');
+            }
+
+            // فلترة الإجابات لهذا الفريق فقط
+            const teamAnswers = answers.filter(a => a.teamId === team.id || a.teamName === team.name);
+            const result = { totalPercentage: 0 };
+
+            // حساب الإجابات الصحيحة لكل مجموعة
+            for (const grp of groupRanges) {
+                const groupAnswers = teamAnswers.filter(a => {
+                    const qIdx = typeof a.questionIndex === 'number' ? a.questionIndex : parseInt(a.questionIndex, 10);
+                    return qIdx >= grp.start && qIdx <= grp.end && a.isCorrect === true;
+                });
+                const correctCount = groupAnswers.length;
+                const totalInGroup = grp.end - grp.start + 1;
+                const percentage = totalInGroup > 0 ? Math.round((correctCount / totalInGroup) * 100) : 0;
+                result[grp.name + 'Score'] = correctCount;
+                result[grp.name + 'Percentage'] = percentage;
+            }
+
+            // حساب النسبة الإجمالية (متوسط نسب المجموعات)
+            const percentages = groupRanges.map(g => result[g.name + 'Percentage'] || 0);
+            result.totalPercentage = Math.round(percentages.reduce((a, b) => a + b, 0) / percentages.length);
+
+            return result;
+        }
+
+        // تحديد الشارة حسب النسبة
+        function getBadge(percentage) {
+            if (percentage >= 90) return "ممتاز";
+            if (percentage >= 75) return "جيد جداً";
+            if (percentage >= 60) return "جيد";
+            return "متوسط";
+        }
+
+        // التحقق إذا كان هذا فريقي
+        function checkIfMyTeam(team) {
+            const myTeamName = localStorage.getItem('myTeamName');
+            const myName = localStorage.getItem('myName');
+            return team.name === myTeamName || team.leader === myName;
+        }
+
+        // بيانات الفرق من اللعبة الفعلية
+        let teamsData = formatGameData(loadGameData());
+
+        // حساب نسب المجموعات
+        function calculateGroupPercentages() {
+            const group1Total = teamsData.reduce((sum, team) => sum + team.group1Score, 0);
+            const group2Total = teamsData.reduce((sum, team) => sum + team.group2Score, 0);
+            const group1Max = teamsData.reduce((sum, team) => sum + (team.score * 0.4), 0);
+            const group2Max = teamsData.reduce((sum, team) => sum + (team.score * 0.9), 0);
+            
+            const group1Percentage = Math.round((group1Total / group1Max) * 100);
+            const group2Percentage = Math.round((group2Total / group2Max) * 100);
+            
+            return { group1Percentage, group2Percentage };
+        }
+
+        // مقارنة الأداء بين المجموعات
+        function updateStats() {
+            const totalTeams = teamsData.length;
+            const avgScore = totalTeams > 0 ? Math.round(teamsData.reduce((sum, team) => sum + Number(team.percentage || 0), 0) / totalTeams) : 0;
+            const totalQuestions = teamsData.some(t => t.totalQuestions) ? (teamsData.find(t => t.totalQuestions)?.totalQuestions || 0) : 0;
+            const avgTime = 45;
+
+            const elTotalTeams = document.getElementById('total-teams');
+            const elAvgScore = document.getElementById('avg-score');
+            const elTotalQuestions = document.getElementById('total-questions');
+            const elAvgTime = document.getElementById('avg-time');
+
+            if (elTotalTeams) elTotalTeams.textContent = totalTeams;
+            if (elAvgScore) elAvgScore.textContent = avgScore + '%';
+            if (elTotalQuestions) elTotalQuestions.textContent = totalQuestions || '-';
+            if (elAvgTime) elAvgTime.textContent = avgTime + 'د';
+        }
+
+        // تحديث نسب المجموعات
+        function updateGroupPercentages() {
+            const group1Avg = teamsData.reduce((sum, team) => sum + (team.group1Percentage || 0), 0) / teamsData.length;
+            const group2Avg = teamsData.reduce((sum, team) => sum + (team.group2Percentage || 0), 0) / teamsData.length;
+            const group3Avg = teamsData.reduce((sum, team) => sum + (team.group3Percentage || 0), 0) / teamsData.length;
+            const group4Avg = teamsData.reduce((sum, team) => sum + (team.group4Percentage || 0), 0) / teamsData.length;
+            const group5Avg = teamsData.reduce((sum, team) => sum + (team.group5Percentage || 0), 0) / teamsData.length;
+            const group6Avg = teamsData.reduce((sum, team) => sum + (team.group6Percentage || 0), 0) / teamsData.length;
+            const group7Avg = teamsData.reduce((sum, team) => sum + (team.group7Percentage || 0), 0) / teamsData.length;
+            const group8Avg = teamsData.reduce((sum, team) => sum + (team.group8Percentage || 0), 0) / teamsData.length;
+            const group9Avg = teamsData.reduce((sum, team) => sum + (team.group9Percentage || 0), 0) / teamsData.length;
+            const group10Avg = teamsData.reduce((sum, team) => sum + (team.group10Percentage || 0), 0) / teamsData.length;
+            const group11Avg = teamsData.reduce((sum, team) => sum + (team.group11Percentage || 0), 0) / teamsData.length;
+            const group12Avg = teamsData.reduce((sum, team) => sum + (team.group12Percentage || 0), 0) / teamsData.length;
+
+            const mapping = [
+                ['group1-percentage', group1Avg],
+                ['group2-percentage', group2Avg],
+                ['group3-percentage', group3Avg],
+                ['group4-percentage', group4Avg],
+                ['group5-percentage', group5Avg],
+                ['group6-percentage', group6Avg],
+                ['group7-percentage', group7Avg],
+                ['group8-percentage', group8Avg],
+                ['group9-percentage', group9Avg],
+                ['group10-percentage', group10Avg],
+                ['group11-percentage', group11Avg],
+                ['group12-percentage', group12Avg]
+            ];
+
+            mapping.forEach(([id, value]) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = Math.round(value) + '%';
+            });
+        }
+
+        function renderTeamsTable() {
+            const container = document.getElementById('teams-table-content');
+            if (!container) return;
+
+            const groupSelect = document.getElementById('group-select');
+            const selectedGroup = groupSelect ? String(groupSelect.value || 'overall') : 'overall';
+            const groupScoreKey = selectedGroup === 'overall' ? 'score' : selectedGroup === 'all' ? 'totalPercentage' : `${selectedGroup}Score`;
+            const groupPercentageKey = selectedGroup === 'overall' ? 'percentage' : selectedGroup === 'all' ? 'totalPercentage' : `${selectedGroup}Percentage`;
+            const scoreHeaderText = selectedGroup === 'overall'
+                ? 'الدرجة'
+                : selectedGroup === 'all'
+                ? 'النسبة الكلية'
+                : `درجة ${selectedGroup.replace('group', 'المجموعة ')}`;
+            const percentageHeaderText = selectedGroup === 'overall'
+                ? 'النسبة'
+                : selectedGroup === 'all'
+                ? 'النسبة الكلية لكل المجموعات'
+                : `نسبة ${selectedGroup.replace('group', 'المجموعة ')}`;
+
+            const list = [...teamsData].sort((a, b) => Number(b[groupPercentageKey] || 0) - Number(a[groupPercentageKey] || 0));
+
+            const header = `
+                <div class="table-columns">
+                    <div>الترتيب</div>
+                    <div>الاسم</div>
+                    <div style="text-align:center;">${percentageHeaderText}</div>
+                </div>
+            `;
+
+            const rows = list.map((team, index) => {
+                const rankLabel = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : String(index + 1);
+                const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
+                const rowClass = index === 0 ? 'first-place' : index === 1 ? 'second-place' : index === 2 ? 'third-place' : '';
+                const myTeamClass = team.isMyTeam ? 'my-team' : '';
+
+                const badgeClass = (function() {
+                    const p = Number(team.percentage || 0);
+                    if (p >= 90) return 'badge-excellent';
+                    if (p >= 60) return 'badge-good';
+                    return 'badge-average';
+                })();
+
+                return `
+                    <div class="team-row ${myTeamClass} ${rowClass}">
+                        <div class="team-rank ${rankClass}">${rankLabel}</div>
+                        <div>
+                            <div class="team-name">${team.name}${team.isMyTeam ? ' (فريقي)' : ''}</div>
+                            ${team.badge ? `<div class="team-badge ${badgeClass}" style="display:inline-block; margin-top:6px;">${team.badge}</div>` : ''}
+                        </div>
+                        <div class="team-percentage">${Number(team[groupPercentageKey] || 0)}%</div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = header + rows;
+        }
+
+        function refreshResults() {
+            (async function() {
+                const history = await getResultsHistoryUniversal();
+                const raw = loadGameData(history);
+                teamsData = await formatGameData(raw);
+                updateStats();
+                renderTeamsTable();
+            })();
+        }
+
+        // تحديث الإحصائياتلتقدم
+        function animateProgressBars() {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach((bar, index) => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, index * 200);
+            });
+        }
+
+        // تحديث ترتيب الفرق
+        function updateTeamRanks() {
+            const teamRows = document.querySelectorAll('.team-rank');
+            teamRows.forEach((rank, index) => {
+                if (index === 0) rank.classList.add('gold');
+                else if (index === 1) rank.classList.add('silver');
+                else if (index === 2) rank.classList.add('bronze');
+            });
+        }
+
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            setupSessionSelector();
+
+            const refreshBtn = document.getElementById('refresh-btn');
+            if (refreshBtn) refreshBtn.addEventListener('click', function() {
+                setupSessionSelector();
+                refreshResults();
+            });
+
+            const groupSelect = document.getElementById('group-select');
+            if (groupSelect) groupSelect.addEventListener('change', renderTeamsTable);
+
+            refreshResults();
+        });
+
+        // لا يوجد تحديث دوري — النتائج تُعرض من آخر بيانات محفوظة
+    </script>
+</body>
+</html>

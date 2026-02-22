@@ -1,0 +1,2070 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>🔬 لوحة تحكم المعلم - مسابقة العلوم التفاعلية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="styles-common.css" rel="stylesheet">
+    <style>
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: var(--spacing-mobile);
+        }
+        @media (min-width: 769px) { .container { padding: var(--spacing-tablet); } }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(74, 44, 114, 0.15), rgba(60, 179, 113, 0.1));
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--navis-primary);
+            box-shadow: var(--shadow-glow), inset 0 0 40px rgba(60, 179, 113, 0.1);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--navis-primary), var(--navis-secondary), var(--navis-orange));
+            box-shadow: 0 0 20px rgba(74, 44, 114, 0.5);
+        }
+        
+        .header::after {
+            content: '🔬';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 3em;
+            opacity: 0.1;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .header h1 {
+            background: linear-gradient(135deg, var(--navis-secondary), var(--navis-light-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 700;
+            text-shadow: 0 0 30px rgba(60, 179, 113, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+
+        .room-code-display {
+            background: linear-gradient(135deg, rgba(74, 44, 114, 0.15), rgba(60, 179, 113, 0.1));
+            border: 2px solid var(--navis-primary);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin: 20px auto;
+            max-width: 400px;
+            text-align: center;
+            backdrop-filter: blur(15px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .room-code {
+            font-size: 3em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--navis-secondary), var(--navis-light-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 10px;
+            margin: 15px 0;
+            display: inline-block;
+            background-color: rgba(74, 44, 114, 0.15);
+            padding: 15px 30px;
+            border-radius: var(--radius-md);
+            border: 2px solid var(--navis-primary);
+            box-shadow: 0 5px 20px rgba(74, 44, 114, 0.3);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--navis-primary), var(--navis-dark-blue));
+            color: white;
+            box-shadow: 0 5px 15px rgba(74, 44, 114, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(74, 44, 114, 0.5), 0 0 20px rgba(60, 179, 113, 0.3);
+        }
+        
+        .btn-primary:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #FF4757, #EE5A6F);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3);
+        }
+        
+        .btn-danger:hover {
+            box-shadow: 0 10px 25px rgba(255, 71, 87, 0.5);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--navis-primary);
+            color: var(--navis-primary);
+        }
+        
+        .btn-outline:hover {
+            background: linear-gradient(135deg, var(--navis-primary), var(--navis-dark-blue));
+            color: white;
+            box-shadow: 0 10px 25px rgba(74, 44, 114, 0.5);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--navis-secondary), var(--navis-dark-green));
+            color: white;
+            box-shadow: 0 5px 15px rgba(60, 179, 113, 0.3);
+        }
+        
+        .btn-success:hover {
+            box-shadow: 0 10px 25px rgba(60, 179, 113, 0.5);
+        }
+
+        .btn-lg {
+            padding: 15px 30px;
+            font-size: 1.1em;
+        }
+
+        .teams-list {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-header h2 {
+            background: linear-gradient(135deg, var(--navis-primary), var(--navis-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.6em;
+        }
+        
+        .section-header h2::before {
+            content: '🔬';
+            font-size: 1.2em;
+            filter: grayscale(0);
+        }
+
+        .badge {
+            background: linear-gradient(135deg, var(--navis-primary), var(--navis-secondary));
+            color: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            font-weight: 700;
+            box-shadow: 0 3px 10px rgba(74, 44, 114, 0.3);
+        }
+
+        .team-card {
+            background: linear-gradient(135deg, rgba(74, 44, 114, 0.12), rgba(60, 179, 113, 0.08));
+            border: 2px solid rgba(74, 44, 114, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .team-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(74, 44, 114, 0.22), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .team-card:hover::before {
+            left: 100%;
+        }
+
+        .team-card.connected {
+            background: linear-gradient(135deg, rgba(74, 44, 114, 0.2), rgba(60, 179, 113, 0.15));
+            border-color: var(--navis-primary);
+            box-shadow: 0 5px 20px rgba(74, 44, 114, 0.3), inset 0 0 20px rgba(60, 179, 113, 0.1);
+        }
+        
+        .team-card:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 8px 25px rgba(74, 44, 114, 0.4);
+        }
+
+        .team-card h3 {
+            background: linear-gradient(135deg, var(--navis-primary), var(--navis-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .team-card p {
+            color: #aaa;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .status.online {
+            background: rgba(76, 201, 100, 0.2);
+            color: #4cc964;
+        }
+
+        .status.waiting {
+            background: rgba(240, 185, 11, 0.2);
+            color: #f0b90b;
+        }
+
+        .questions-management {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .questions-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(76, 201, 240, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(76, 201, 240, 0.2);
+        }
+
+        .questions-info h3 {
+            color: #4cc9f0;
+            margin-bottom: 10px;
+        }
+
+        .questions-info p {
+            color: #aaa;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .question-groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .question-group-card {
+            background: linear-gradient(135deg, var(--navis-dark-blue), var(--navis-dark-green));
+            border: 2px solid var(--navis-primary);
+            border-radius: 18px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .question-group-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(74, 44, 114, 0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .group-count {
+            background: linear-gradient(135deg, var(--navis-primary), var(--navis-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            margin-bottom: 5px;
+            font-size: 1.2em;
+        }
+
+        .group-type {
+            color: #aaa;
+            font-size: 0.8em;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 3px 8px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .selected-group-info {
+            background: rgba(76, 201, 240, 0.1);
+            border: 2px solid var(--navis-primary);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .selected-group-info h4 {
+            color: var(--navis-primary);
+            margin-bottom: 10px;
+        }
+
+        .selected-group-info p {
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+
+        .game-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--navis-dark-blue), var(--navis-dark-green));
+            border: 2px solid var(--navis-primary);
+            border-radius: 18px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--navis-primary), var(--navis-secondary));
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(74, 44, 114, 0.3);
+        }
+
+        .stat-card i {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, var(--navis-primary), var(--navis-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(74, 44, 114, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 0 10px rgba(74, 44, 114, 0.5));
+        }
+
+        .stat-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--navis-primary), var(--navis-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 1em;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        @media (max-width: 1024px) {
+            .game-controls { flex-wrap: wrap; justify-content: center; }
+        }
+        @media (max-width: 768px) {
+            .container { padding: var(--spacing-mobile); }
+            .header h1 { font-size: 1.5rem; }
+            .room-code { font-size: 1.5em; padding: 8px 12px; }
+            .game-controls { flex-direction: column; align-items: stretch; }
+            .btn { width: 100%; max-width: 100%; }
+        }
+        @media (max-width: 480px) {
+            .header { padding: 20px 15px; }
+        }
+        .teacher-code-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .teacher-code-box {
+            background: linear-gradient(135deg, var(--card-bg), var(--card-bg-2));
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            padding: 35px;
+            max-width: 380px;
+            width: 90%;
+            text-align: center;
+        }
+        .teacher-code-box h2 { color: var(--navis-primary); margin-bottom: 15px; }
+        .teacher-code-box input {
+            width: 100%;
+            padding: 14px 18px;
+            font-size: 1.2em;
+            text-align: center;
+            letter-spacing: 4px;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        .teacher-code-box .code-error { color: #ff4757; margin-bottom: 10px; display: none; }
+    </style>
+</head>
+<body>
+    <div id="teacher-code-overlay" class="teacher-code-overlay" style="display:none;">
+        <div class="teacher-code-box">
+            <h2><i class="fas fa-lock"></i> رمز المعلم</h2>
+            <p style="color: rgba(255,255,255,0.8); margin-bottom: 20px;">أدخل رمز المعلم لإنشاء غرفة</p>
+            <p id="teacher-code-error" class="code-error"><i class="fas fa-exclamation-circle"></i> الرمز غير صحيح</p>
+            <input type="password" id="teacher-code-input" placeholder="أدخل الرمز" maxlength="20" autocomplete="off">
+            <button type="button" class="btn btn-primary" id="teacher-code-submit" style="width: 100%;">
+                <i class="fas fa-check"></i> دخول
+            </button>
+        </div>
+    </div>
+    <div class="container">
+        <header class="header">
+            <div class="teacher-info">
+                <h1><span class="entry-icon">🔬</span> لوحة تحكم المعلم</h1>
+                <div class="teacher-details">
+                    <span class="teacher-id">المعلم: <span id="teacher-id-display">----</span></span>
+                    <span class="room-status">حالة الغرفة: <span id="room-status">نشطة</span></span>
+                </div>
+            </div>
+            <div id="room-code-display">
+                <p>كود الغرفة: <span id="room-code" class="room-code">----</span></p>
+                <button class="btn btn-primary" id="copy-code">
+                    <i class="far fa-copy"></i> نسخ كود الغرفة
+                </button>
+                <p class="hint">شارك هذا الكود مع الطلاب للانضمام</p>
+            </div>
+        </header>
+        
+        <div class="teams-list">
+            <div class="section-header">
+                <h2><i class="fas fa-users"></i> الفرق المتصلة</h2>
+                <span class="badge" id="connected-count">0 متصل</span>
+            </div>
+            <div id="connected-teams">
+                <div class="empty-state">
+                    <i class="fas fa-user-clock"></i>
+                    <p>لا توجد فرق متصلة بعد</p>
+                    <small>سيظهر الفرق هنا عند اتصالهم</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-controls">
+            <button class="btn btn-primary btn-lg" id="start-game" disabled>
+                <i class="fas fa-play"></i> بدء اللعبة
+            </button>
+            <button class="btn btn-outline" id="settings-btn">
+                <i class="fas fa-cog"></i> الإعدادات
+            </button>
+            <button class="btn btn-outline" id="questions-btn">
+                <i class="fas fa-question-circle"></i> إدارة الأسئلة
+            </button>
+            <button class="btn btn-danger" id="reset-game">
+                <i class="fas fa-redo"></i> إعادة تعيين
+            </button>
+        </div>
+        
+        <div class="game-stats">
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <div class="stat-info">
+                    <span class="stat-value" id="teams-count">0</span>
+                    <span class="stat-label">فريق متصل</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-question-circle"></i>
+                <div class="stat-info">
+                    <span class="stat-value" id="questions-count">0</span>
+                    <span class="stat-label">سؤال متاح</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- قسم إدارة الأسئلة -->
+        <div class="questions-management">
+            <div class="section-header">
+                <h2><i class="fas fa-flask"></i> اختيار مجموعة الأسئلة</h2>
+                <button class="btn btn-primary" id="toggle-questions-btn">
+                    <i class="fas fa-chevron-down"></i> إظهار الأسئلة
+                </button>
+            </div>
+            
+            <div id="questions-selector" style="display: none;">
+                <div class="questions-info">
+                    <h3>اختر مجموعة الأسئلة للعب:</h3>
+                    <p>4 مجموعات الأولى: 21 سؤال لكل مجموعة | 8 مجموعات الثانية: 19 سؤال لكل مجموعة</p>
+                    <p>المجموع: 236 سؤال - يمكنك اختيار أي مجموعة للبدء منها</p>
+                </div>
+                
+                <div id="question-groups" class="question-groups-grid">
+                    <!-- سيتم عرض المجموعات هنا -->
+                </div>
+                
+                <div class="selected-group-info" id="selected-group-info" style="display: none;">
+                    <h4>المجموعة المختارة: <span id="selected-group-name"></span></h4>
+                    <p>عدد الأسئلة: <span id="selected-group-count"></span> سؤال</p>
+                    <button class="btn btn-success" id="confirm-group-btn">
+                        <i class="fas fa-check"></i> تأكيد وبدء اللعبة
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase للمزامنة بين الأجهزة -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="firebase-sync.js"></script>
+    <!-- بنك الأسئلة -->
+    <script src="questions-data.js"></script>
+
+    <script>
+        var TEACHER_CODE = '4570211';
+        function isTeacherVerified() {
+            return sessionStorage.getItem('teacherCodeVerified') === 'true';
+        }
+        function setTeacherVerified() {
+            sessionStorage.setItem('teacherCodeVerified', 'true');
+        }
+        function showTeacherCodeOverlay() {
+            var el = document.getElementById('teacher-code-overlay');
+            if (el) el.style.display = 'flex';
+        }
+        function hideTeacherCodeOverlay() {
+            var el = document.getElementById('teacher-code-overlay');
+            if (el) el.style.display = 'none';
+        }
+        function setupTeacherCodeCheck(onSuccess) {
+            var overlay = document.getElementById('teacher-code-overlay');
+            var input = document.getElementById('teacher-code-input');
+            var submit = document.getElementById('teacher-code-submit');
+            var error = document.getElementById('teacher-code-error');
+            if (!overlay || !input || !submit || !error) return;
+            function checkCode() {
+                var val = (input.value || '').trim();
+                error.style.display = 'none';
+                if (val === TEACHER_CODE) {
+                    setTeacherVerified();
+                    hideTeacherCodeOverlay();
+                    if (typeof onSuccess === 'function') onSuccess();
+                    return true;
+                }
+                error.style.display = 'block';
+                input.value = '';
+                input.focus();
+                return false;
+            }
+            submit.addEventListener('click', function() {
+                checkCode();
+            });
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    checkCode();
+                }
+            });
+        }
+        // حالة التطبيق
+        const appState = {
+            roomCode: '',
+            isHost: true,
+            teams: [],
+            gameInProgress: false,
+            questions: [],
+            questionGroups: [],
+            selectedGroup: null,
+            // إعدادات اللعبة المتقدمة
+            gameSettings: {
+                maxTeams: 4,
+                advancedScoring: true,
+                cardsEnabled: true,
+                bankSystem: true,
+                questionTime: 30
+            },
+            // البطاقات المتاحة
+            availableCards: [
+                { id: 'shield', name: 'حماية الرصيد', cost: 3, icon: '🛡️', description: 'تمنع سحب النقاط من الفريق لسؤال واحد' },
+                { id: 'eliminate', name: 'حذف خيارات', cost: 2, icon: '❌', description: 'حذف خيارين خاطئين من السؤال' },
+                { id: 'freeze', name: 'تجميد فريق', cost: 4, icon: '🧊', description: 'تجميد فريق واحد لمدة 5-10 ثواني' }
+            ],
+            externalQuestions: [
+                {
+                    question: "ما هو أكبر كوكب في المجموعة الشمسية؟",
+                    options: ["الأرض", "المريخ", "المشتري", "زحل"],
+                    answer: 2,
+                    category: "علوم"
+                },
+                {
+                    question: "كم عدد القارات في العالم؟",
+                    options: ["5", "6", "7", "8"],
+                    answer: 2,
+                    category: "جغرافيا"
+                },
+                {
+                    question: "من هو مخترع المصباح الكهربائي؟",
+                    options: ["نيكولا تسلا", "توماس إديسون", "ألبرت أينشتاين", "بنجامين فرانكلين"],
+                    answer: 1,
+                    category: "تاريخ"
+                },
+                {
+                    question: "ما هي عاصمة فرنسا؟",
+                    options: ["لندن", "برلين", "مدريد", "باريس"],
+                    answer: 3,
+                    category: "جغرافيا"
+                }
+            ],
+            allQuestions: []
+        };
+
+        // قراءة أسئلة `questions-data.js` بشكل آمن
+        function getAllQuestionsSafely() {
+            try {
+                if (typeof ALL_QUESTIONS !== 'undefined' && Array.isArray(ALL_QUESTIONS)) {
+                    return ALL_QUESTIONS;
+                }
+            } catch (e) {
+                // ignore
+            }
+            return [];
+        }
+
+        async function prepareQuestionsData() {
+            // 1) جرّب بنك الأسئلة المدمج
+            let questions = getAllQuestionsSafely();
+
+            // 2) إذا كان قليل/فارغ، جرّب ملف النص `الاساله` (مفيد لو كان فيه كل الأسئلة)
+            if (questions.length < 100) {
+                try {
+                    const fromText = await loadQuestionsFromTextAsset();
+                    if (Array.isArray(fromText) && fromText.length > questions.length) {
+                        questions = fromText;
+                    }
+                } catch (e) {
+                    console.warn('فشل تحميل الاساله عبر fetch:', e);
+                }
+            }
+
+            appState.allQuestions = questions;
+
+            if (elements.questionsCount) {
+                elements.questionsCount.textContent = questions.length;
+            }
+
+            console.log('إجمالي الأسئلة الجاهزة:', questions.length);
+        }
+
+        // عناصر واجهة المستخدم
+        const elements = {
+            roomCode: document.getElementById('room-code'),
+            copyCodeBtn: document.getElementById('copy-code'),
+            startButton: document.getElementById('start-game'),
+            resetButton: document.getElementById('reset-game'),
+            settingsBtn: document.getElementById('settings-btn'),
+            connectedTeams: document.getElementById('connected-teams'),
+            connectedCount: document.getElementById('connected-count'),
+            teamsCount: document.getElementById('teams-count'),
+            questionsCount: document.getElementById('questions-count'),
+            toggleQuestionsBtn: document.getElementById('toggle-questions-btn'),
+            questionsSelector: document.getElementById('questions-selector'),
+            questionGroups: document.getElementById('question-groups'),
+            selectedGroupInfo: document.getElementById('selected-group-info'),
+            selectedGroupName: document.getElementById('selected-group-name'),
+            selectedGroupCount: document.getElementById('selected-group-count'),
+            confirmGroupBtn: document.getElementById('confirm-group-btn')
+        };
+
+        // تحديث واجهة المستخدم
+        function updateUI() {
+            if (elements.roomCode) {
+                elements.roomCode.textContent = appState.roomCode;
+            }
+            if (elements.copyCodeBtn) {
+                elements.copyCodeBtn.disabled = !appState.roomCode;
+            }
+        }
+
+        // إنشاء غرفة جديدة
+        async function createRoom() {
+            try {
+                console.log('جاري إنشاء غرفة جديدة...');
+
+                // لو فيه غرفة سابقة محفوظة محلياً، اعتبرها غير نشطة وابدأ غرفة جديدة بدون إزعاج المستخدم
+                try {
+                    localStorage.setItem('teacherRoomActive', 'false');
+                } catch (e) {
+                    // ignore
+                }
+
+                // مسح الفرق القديمة
+                localStorage.removeItem('connectedTeams');
+                appState.connectedTeams = [];
+
+                // توليد كود غرفة عشوائي (مع تجنب التصادم على Firebase إن كان مفعّل)
+                var attempts = 0;
+                var newCode = '';
+                while (attempts < 20) {
+                    attempts++;
+                    newCode = Math.floor(1000 + Math.random() * 9000).toString();
+
+                    // إذا Firebase متاح، تأكد أن الكود غير مستخدم
+                    if (typeof FirebaseSync !== 'undefined' && typeof FirebaseSync.getRoomFromServer === 'function') {
+                        try {
+                            var room = await FirebaseSync.getRoomFromServer(newCode);
+                            if (room && room.roomActive === true) {
+                                continue;
+                            }
+                        } catch (e) {
+                            // إذا فشل التحقق، لا تمنع إنشاء الغرفة (سيعمل محلياً على الأقل)
+                        }
+                    }
+                    break;
+                }
+                appState.roomCode = newCode;
+
+                // حفظ كود الغرفة في localStorage مع معرف فريد للمعلم
+                const teacherId = 'teacher_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('teacherRoomCode', appState.roomCode);
+                localStorage.setItem('currentRoom', appState.roomCode);
+                localStorage.setItem('roomActive', 'true');
+                localStorage.setItem('teacherRoomActive', 'true');
+                localStorage.setItem('teacherId', teacherId);
+                localStorage.setItem('teacherRoomCreatedAt', new Date().toISOString());
+
+                // إنشاء الغرفة على السيرفر (Firebase) ليدخل الطلاب من أجهزة أخرى
+                if (typeof FirebaseSync !== 'undefined' && typeof FirebaseSync.createRoomOnServer === 'function') {
+                    FirebaseSync.createRoomOnServer(appState.roomCode).then(function(ok) {
+                        if (ok) {
+                            console.log('[Firebase] تم إنشاء الغرفة على السيرفر');
+                            if (appState._firebaseUnsubscribe) appState._firebaseUnsubscribe();
+                            appState._firebaseUnsubscribe = FirebaseSync.onRoomUpdate(appState.roomCode, function(data) {
+                                if (data && data.teams) {
+                                    var arr = Object.keys(data.teams).map(function(k) { return data.teams[k]; });
+                                    appState.connectedTeams = arr;
+                                    localStorage.setItem('connectedTeams', JSON.stringify(arr));
+                                    renderTeams(arr);
+                                    var cnt = arr.length;
+                                    if (elements.connectedCount) elements.connectedCount.textContent = cnt + ' متصل';
+                                    if (elements.teamsCount) elements.teamsCount.textContent = cnt;
+                                    if (elements.startButton) elements.startButton.disabled = cnt < 2;
+                                }
+                            });
+                        } else {
+                            console.warn('[Firebase] لم يتم إنشاء الغرفة - تأكد من تفعيل Firebase في firebase-config.js');
+                        }
+                    });
+                }
+
+                // تحديث واجهة المستخدم
+                updateUI();
+
+                console.log('تم إنشاء غرفة جديدة:', appState.roomCode);
+                showNotification('تم إنشاء غرفة جديدة بنجاح', 'success');
+            } catch (error) {
+                console.error('حدث خطأ أثناء إنشاء الغرفة:', error);
+                alert('حدث خطأ أثناء إنشاء الغرفة. يرجى تحديث الصفحة والمحاولة مرة أخرى.');
+            }
+        }
+
+        // تحميل الأسئلة
+        function loadQuestions() {
+            // أولاً تحميل الأسئلة من ملف الأسئلة إذا كان متاحاً
+            try {
+                const questionsFromFile = loadQuestionsFromTextFile();
+                if (questionsFromFile.length > 0) {
+                    appState.questions = questionsFromFile;
+                    console.log('تم تحميل', questionsFromFile.length, 'سؤال من الملف');
+                    updateQuestionsCount();
+                    return;
+                }
+            } catch (error) {
+                console.log('لم يتم تحميل الأسئلة من الملف، استخدام الأسئلة الافتراضية');
+            }
+            
+            // في حالة عدم وجود ملف، استخدام الأسئلة الافتراضية
+            const sampleQuestions = [
+                {
+                    question: 'ما هي عاصمة المملكة العربية السعودية؟',
+                    options: ['جدة', 'الرياض', 'الدمام', 'مكة المكرمة'],
+                    answer: 1,
+                    category: 'معلومات عامة'
+                },
+                {
+                    question: 'ما هو أكبر كوكب في المجموعة الشمسية؟',
+                    options: ['الأرض', 'المشتري', 'زحل', 'المريخ'],
+                    answer: 1,
+                    category: 'علوم'
+                }
+            ];
+            
+            appState.questions = sampleQuestions;
+            console.log('تم تحميل', sampleQuestions.length, 'سؤال افتراضي');
+            updateQuestionsCount();
+        }
+
+        // تبديل عرض الأسئلة
+        function toggleQuestions() {
+            const isVisible = elements.questionsSelector.style.display === 'block';
+            
+            if (isVisible) {
+                elements.questionsSelector.style.display = 'none';
+                elements.toggleQuestionsBtn.innerHTML = '<i class="fas fa-chevron-down"></i> إظهار الأسئلة';
+            } else {
+                elements.questionsSelector.style.display = 'block';
+                elements.toggleQuestionsBtn.innerHTML = '<i class="fas fa-chevron-up"></i> إخفاء الأسئلة';
+                
+                // تهيئة الأسئلة عند أول فتح
+                if (appState.questionGroups.length === 0) {
+                    initializeQuestions();
+                }
+            }
+        }
+
+        // تهيئة الأسئلة (عند فتح قسم المجموعات)
+        function initializeQuestions() {
+            try {
+                console.log('جاري تهيئة الأسئلة...');
+                
+                // تحميل الأسئلة من بنك الأسئلة
+                const questions = (appState.allQuestions && appState.allQuestions.length > 0)
+                    ? appState.allQuestions
+                    : getAllQuestionsSafely();
+                
+                if (questions.length === 0) {
+                    showNotification('لا توجد أسئلة محملة', 'error');
+                    return;
+                }
+                
+                // تقسيم الأسئلة لـ 12 مجموعة
+                const groups = divideQuestionsIntoGroups(questions);
+                
+                appState.questionGroups = groups;
+                displayQuestionGroups(groups);
+                
+                // تحديث عدد الأسئلة في الواجهة
+                const questionsCountElement = document.getElementById('questions-count');
+                const questionsLoadedBadgeElement = document.getElementById('questions-loaded-badge');
+                
+                if (questionsCountElement) {
+                    questionsCountElement.textContent = questions.length;
+                }
+                if (questionsLoadedBadgeElement) {
+                    questionsLoadedBadgeElement.textContent = `${questions.length} سؤال محمل`;
+                }
+                
+                console.log('تم تهيئة الأسئلة بنجاح:', questions.length, 'سؤال');
+                showNotification(`تم تحميل ${questions.length} سؤال بنجاح`, 'success');
+                
+            } catch (error) {
+                console.error('خطأ في تهيئة الأسئلة:', error);
+                showNotification('فشل تهيئة الأسئلة', 'error');
+            }
+        }
+
+        // (للتوافق) دالة قديمة كانت تحمل من ملف/نص — الآن تعيد بنك الأسئلة مباشرة
+        async function loadQuestionsFromFile() {
+            const questions = (appState.allQuestions && appState.allQuestions.length > 0)
+                ? appState.allQuestions
+                : getAllQuestionsSafely();
+            return questions;
+        }
+
+        // تحليل الأسئلة من النص
+        function parseQuestionsFromText(text) {
+            const questions = [];
+            const lines = text.split('\n').filter(line => line.trim());
+            
+            let currentQuestion = {};
+            let questionNumber = 1;
+            
+            console.log('بدء تحليل الأسئلة من النص...');
+            console.log('عدد الأسطر:', lines.length);
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                
+                // البحث عن الأسئلة التي تبدأ برقم
+                if (line.match(/^\d+\./)) {
+                    // حفظ السؤال السابق إذا كان موجوداً
+                    if (currentQuestion.question && currentQuestion.options && currentQuestion.options.length >= 4 && currentQuestion.answer >= 0) {
+                        questions.push(currentQuestion);
+                        console.log('تم حفظ السؤال:', currentQuestion.question, 'الإجابة:', currentQuestion.answer);
+                    }
+                    
+                    // بدء سؤال جديد
+                    currentQuestion = {
+                        question: line.replace(/^\d+\.\s*/, ''),
+                        options: [],
+                        answer: -1,
+                        category: "علمي"
+                    };
+                    continue;
+                }
+
+                // تجاهل أي سطر قبل أول سؤال
+                if (!currentQuestion.question) continue;
+
+                // معالجة خيارات الإجابة (قد تكون بدون حروف: "النسيج" أو مع (صح))
+                const isCorrect = line.includes('(صح)') || line.includes('(✓)') || line.includes('✓');
+                const cleanLine = line
+                    .replace(/\(صح\)/g, '')
+                    .replace(/\(✓\)/g, '')
+                    .replace(/✓/g, '')
+                    .replace(/^[أ-د]\.\s*/, '')   // إن وُجدت حروف
+                    .replace(/^[أ-د]\)\s*/, '')
+                    .replace(/^[أ-د]\s+/, '')
+                    .trim();
+
+                if (cleanLine.length === 0) continue;
+
+                currentQuestion.options.push(cleanLine);
+                if (isCorrect) {
+                    currentQuestion.answer = currentQuestion.options.length - 1;
+                }
+            }
+            
+            // إضافة السؤال الأخير
+            if (currentQuestion.question && currentQuestion.options && currentQuestion.options.length >= 4 && currentQuestion.answer >= 0) {
+                questions.push(currentQuestion);
+                console.log('تم حفظ السؤال الأخير:', currentQuestion.question, 'الإجابة:', currentQuestion.answer);
+            }
+            
+            console.log('تم تحليل', questions.length, 'سؤال');
+            
+            // التحقق من الإجابات الصحيحة
+            questions.forEach((q, index) => {
+                if (q.answer === -1) {
+                    console.warn('سؤال بدون إجابة صحيحة:', index + 1, q.question);
+                } else {
+                    console.log('سؤال', index + 1, 'الإجابة الصحيحة:', q.answer, q.options[q.answer]);
+                }
+            });
+            
+            return questions;
+        }
+
+        // ملاحظة: كانت هذه الدالة تعتمد على تحميل ديناميكي وتُرجع [] مؤقتاً.
+        // الآن بنك الأسئلة يُحمّل مسبقاً عبر <script src="questions-data.js">.
+        function getEmbeddedQuestions() {
+            return getAllQuestionsSafely();
+        }
+
+        // تقسيم الأسئلة لـ 12 مجموعة (4 مجموعات فيها 20 سؤال، 8 مجموعات فيها 19 سؤال)
+        function divideQuestionsIntoGroups(questions) {
+            const groups = [];
+            let questionIndex = 0;
+            
+            // التحقق من عدد الأسئلة
+            const totalQuestions = questions.length;
+            console.log('عدد الأسئلة الإجمالي:', totalQuestions);
+            
+            // تعديل التقسيم ليعمل مع أي عدد من الأسئلة
+            if (totalQuestions >= 20) {
+                // تقسيم الأسئلة لـ 12 مجموعة
+                const questionsPerGroup = Math.floor(totalQuestions / 12);
+                const remainingQuestions = totalQuestions % 12;
+                
+                console.log('عدد الأسئلة لكل مجموعة:', questionsPerGroup);
+                console.log('الأسئلة المتبقية:', remainingQuestions);
+                
+                for (let i = 0; i < 12; i++) {
+                    const groupQuestions = questions.slice(questionIndex, questionIndex + questionsPerGroup + (i < remainingQuestions ? 1 : 0));
+                    questionIndex += questionsPerGroup + (i < remainingQuestions ? 1 : 0);
+                    
+                    groups.push({
+                        id: i + 1,
+                        name: `المجموعة ${i + 1}`,
+                        questions: groupQuestions,
+                        totalQuestions: groupQuestions.length,
+                        hasExternal: true
+                    });
+                }
+            } else {
+                // إذا كانت الأسئلة أقل من 20، نضعها في مجموعة واحدة
+                groups.push({
+                    id: 1,
+                    name: "المجموعة 1",
+                    questions: questions,
+                    totalQuestions: totalQuestions,
+                    hasExternal: false
+                });
+            }
+            
+            return groups;
+        }
+
+        // عرض مجموعات الأسئلة
+        function displayQuestionGroups(groups) {
+            elements.questionGroups.innerHTML = '';
+            
+            groups.forEach(group => {
+                const groupCard = document.createElement('div');
+                groupCard.className = 'question-group-card';
+                
+                // تحديد لون المجموعة
+                const groupType = group.id <= 4 ? 'primary' : 'secondary';
+                const typeText = group.id <= 4 ? 'مجموعة كبيرة' : 'مجموعة عادية';
+                const questionCount = group.totalQuestions;
+                
+                groupCard.innerHTML = `
+                    <div class="group-number group-${groupType}">${group.id}</div>
+                    <h4>${group.name}</h4>
+                    <div class="group-count">${questionCount} سؤال</div>
+                    <div class="group-type">${typeText}</div>
+                `;
+                
+                groupCard.addEventListener('click', (evt) => selectQuestionGroup(evt, group));
+                elements.questionGroups.appendChild(groupCard);
+            });
+        }
+
+        // اختيار مجموعة الأسئلة
+        function selectQuestionGroup(evt, group) {
+            // إزالة التحديد من جميع المجموعات
+            document.querySelectorAll('.question-group-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // تحديد المجموعة المختارة
+            if (evt && evt.currentTarget) {
+                evt.currentTarget.classList.add('selected');
+            }
+            
+            appState.selectedGroup = group;
+            appState.questions = Array.isArray(group.questions) ? group.questions : [];
+            
+            // عرض معلومات المجموعة المختارة
+            elements.selectedGroupName.textContent = group.name;
+            elements.selectedGroupCount.textContent = group.totalQuestions;
+            elements.selectedGroupInfo.style.display = 'block';
+        }
+
+        // تأكيد اختيار المجموعة
+        function confirmQuestionGroup() {
+            if (!appState.selectedGroup) {
+                showNotification('الرجاء اختيار مجموعة أسئلة أولاً', 'error');
+                return;
+            }
+            
+            // تعيين أسئلة المجموعة المختارة كأسئلة اللعبة
+            appState.questions = appState.selectedGroup.questions;
+            
+            console.log('تم تأكيد المجموعة:', appState.selectedGroup.name);
+            console.log('عدد الأسئلة في المجموعة:', appState.questions.length);
+            
+            showNotification(`تم اختيار ${appState.selectedGroup.name} (${appState.questions.length} سؤال)`, 'success');
+            
+            // إخفاء بطاقة المجموعة
+            elements.selectedGroupInfo.style.display = 'none';
+        }
+
+        // تحميل أسئلة تجريبية
+        function loadSampleQuestions() {
+            const sampleQuestions = [
+                {
+                    question: "ما هي عاصمة المملكة العربية السعودية؟",
+                    options: ["جدة", "الرياض", "الدمام", "مكة المكرمة"],
+                    answer: 1,
+                    category: "جغرافيا"
+                },
+                {
+                    question: "كم عدد أيام السنة العادية؟",
+                    options: ["364", "365", "366", "363"],
+                    answer: 1,
+                    category: "علمي"
+                }
+            ];
+            
+            // إنشاء مجموعات تجريبية
+            const groups = [];
+            for (let i = 0; i < 12; i++) {
+                const groupQuestions = [...sampleQuestions];
+                if (i < 4) {
+                    groupQuestions.push(appState.externalQuestions[i]);
+                }
+                
+                groups.push({
+                    id: i + 1,
+                    name: `المجموعة ${i + 1}`,
+                    questions: groupQuestions,
+                    totalQuestions: groupQuestions.length,
+                    hasExternal: i < 4
+                });
+            }
+            
+            appState.questionGroups = groups;
+            displayQuestionGroups(groups);
+        }
+
+        // عرض الإشعارات
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            // إضافة الإشعار للصفحة
+            document.body.appendChild(notification);
+            
+            // إزالة الإشعار بعد 3 ثوانٍ
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // تحديث عدد الأسئلة في الواجهة
+        function updateQuestionsCount() {
+            if (elements.questionsCount) {
+                elements.questionsCount.textContent = appState.questions.length;
+            }
+        }
+
+        // تحديث حالة الفرق
+        function updateTeamsStatus() {
+            try {
+                var teamsData = localStorage.getItem('connectedTeams');
+                var teams = teamsData ? JSON.parse(teamsData) : [];
+                appState.connectedTeams = teams;
+                renderTeams(teams);
+                var connectedCount = teams.length;
+                if (elements.connectedCount) elements.connectedCount.textContent = connectedCount + ' متصل';
+                if (elements.teamsCount) elements.teamsCount.textContent = connectedCount;
+            } catch (error) {
+                console.error('حدث خطأ أثناء تحديث حالة الفرق:', error);
+            }
+        }
+
+        // بدء تحديث حالة الفرق
+        function startTeamUpdates() {
+            updateTeamsStatus();
+            setInterval(updateTeamsStatus, 2000);
+        }
+
+        // نسخ كود الغرفة
+        function copyRoomCode() {
+            if (!appState.roomCode) return;
+            
+            navigator.clipboard.writeText(appState.roomCode).then(() => {
+                alert('تم نسخ كود الغرفة: ' + appState.roomCode);
+            }).catch(err => {
+                console.error('فشل نسخ النص: ', err);
+                // طريقة بديلة لنسخ النص
+                const textarea = document.createElement('textarea');
+                textarea.value = appState.roomCode;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('تم نسخ كود الغرفة: ' + appState.roomCode);
+            });
+        }
+
+        // إعداد مستمعي الأحداث
+        function setupEventListeners() {
+            // زر نسخ الكود
+            if (elements.copyCodeBtn) {
+                elements.copyCodeBtn.addEventListener('click', copyRoomCode);
+            }
+            
+            // زر تبديل الأسئلة
+            if (elements.toggleQuestionsBtn) {
+                elements.toggleQuestionsBtn.addEventListener('click', toggleQuestions);
+            }
+            
+            // زر تأكيد اختيار المجموعة
+            if (elements.confirmGroupBtn) {
+                elements.confirmGroupBtn.addEventListener('click', confirmQuestionGroup);
+            }
+            
+            // زر بدء اللعبة
+            if (elements.startButton) {
+                elements.startButton.addEventListener('click', startGame);
+            }
+            
+            // زر إعادة تعيين اللعبة
+            if (elements.resetButton) {
+                elements.resetButton.addEventListener('click', resetGame);
+            }
+            
+            // زر فتح الإعدادات
+            if (elements.settingsBtn) {
+                elements.settingsBtn.addEventListener('click', () => {
+                    alert('سيتم فتح نافذة الإعدادات قريباً');
+                });
+            }
+            
+            // فتح إدارة الأسئلة
+            const questionsBtn = document.getElementById('questions-btn');
+            if (questionsBtn) {
+                questionsBtn.addEventListener('click', openQuestionsManager);
+            }
+        }
+
+        // عرض الفرق
+        function renderTeams(teams) {
+            console.log('=== بدء renderTeams ===');
+            console.log('الفرق الواردة:', teams);
+            console.log('عدد الفرق:', teams.length);
+            
+            const container = elements.connectedTeams;
+            console.log('عنصر الحاوية:', container);
+            
+            if (!container) {
+                console.error('عنصر connectedTeams غير موجود!');
+                return;
+            }
+            
+            if (teams.length === 0) {
+                console.log('لا توجد فرق، عرض رسالة فارغة');
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-user-clock"></i>
+                        <p>لا توجد فرق متصلة بعد</p>
+                        <small>سيظهر الفرق هنا عند اتصالهم</small>
+                    </div>
+                `;
+                return;
+            }
+            
+            console.log('عرض الفرق في الواجهة');
+            container.innerHTML = teams.map(team => `
+                <div class="team-card" id="team-${team.id}">
+                    <div class="team-info">
+                        <h3>${team.teamName || 'فريق بدون اسم'}</h3>
+                        <p class="leader"><i class="fas fa-crown"></i> ${team.leaderName || 'بدون قائد'}</p>
+                        <p class="join-time"><i class="fas fa-clock"></i> انضم: ${new Date(team.joinedAt).toLocaleTimeString('ar-SA')}</p>
+                        <div class="team-stats">
+                            <span class="team-score">النقاط: ${team.score || 0}</span>
+                            <span class="team-bank">البنك: ${team.bank || 0}</span>
+                            <span class="team-cards">البطاقات: ${team.cards ? team.cards.length : 0}</span>
+                        </div>
+                    </div>
+                    <div class="team-actions">
+                        <span class="status online"><i class="fas fa-circle"></i> متصل</span>
+                        <button class="btn btn-danger btn-sm" onclick="removeTeam('${team.id}')" title="طرد الفريق">
+                            <i class="fas fa-user-times"></i> طرد
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            console.log('تم تحديث واجهة الفرق بنجاح');
+            console.log('=== نهاية renderTeams ===');
+            
+            // تحديث عدد الفرق المتصلة
+            if (elements.connectedCount) {
+                elements.connectedCount.textContent = `${teams.length} متصل`;
+            }
+            
+            // تفعيل/تعطيل زر البدء بناءً على عدد الفرق
+            if (elements.startButton) {
+                elements.startButton.disabled = teams.length < 2;
+            }
+        }
+
+        // طرد فريق
+        function removeTeam(teamId) {
+            if (!confirm('هل أنت متأكد من طرد هذا الفريق؟')) {
+                return;
+            }
+            
+            try {
+                // الحصول على الفرق الحالية
+                let connectedTeams = JSON.parse(localStorage.getItem('connectedTeams') || '[]');
+                
+                // البحث عن الفريق المراد طرده
+                const teamToRemove = connectedTeams.find(team => team.id === teamId);
+                
+                if (!teamToRemove) {
+                    showNotification('الفريق غير موجود', 'error');
+                    return;
+                }
+                
+                // حذف الفريق المحدد
+                connectedTeams = connectedTeams.filter(team => team.id !== teamId);
+                
+                // تحديث localStorage
+                localStorage.setItem('connectedTeams', JSON.stringify(connectedTeams));
+                
+                // تحديث حالة التطبيق
+                appState.connectedTeams = connectedTeams;
+                
+                // إرسال إشعار للطالب المطرود (محاكاة)
+                localStorage.setItem('kickedTeam_' + teamId, JSON.stringify({
+                    kicked: true,
+                    kickedAt: new Date().toISOString(),
+                    reason: 'تم طردك من الغرفة من قبل المعلم'
+                }));
+                
+                // تحديث الواجهة
+                updateTeamsStatus();
+                
+                // إظهار رسالة نجاح
+                showNotification(`تم طرد الفريق "${teamToRemove.teamName}" بنجاح`, 'success');
+                
+                console.log('تم طرد الفريق:', teamToRemove.teamName);
+                
+            } catch (error) {
+                console.error('خطأ في طرد الفريق:', error);
+                showNotification('حدث خطأ أثناء طرد الفريق', 'error');
+            }
+        }
+
+        // عرض الإشعارات
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            // إضافة الإشعار للصفحة
+            document.body.appendChild(notification);
+            
+            // إزالة الإشعار بعد 3 ثوانٍ
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // فتح مدير الأسئلة
+        function openQuestionsManager() {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-question-circle"></i> إدارة الأسئلة</h3>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="questions-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">عدد الأسئلة:</span>
+                                <span class="stat-value">${appState.questions.length}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">التصنيفات:</span>
+                                <span class="stat-value">${getCategoriesCount()}</span>
+                            </div>
+                        </div>
+                        <div class="questions-actions">
+                            <button class="btn btn-primary" onclick="importQuestionsFromUserFile()">
+                                <i class="fas fa-file-import"></i> استيراد من ملف
+                            </button>
+                            <button class="btn btn-outline" onclick="addNewQuestion()">
+                                <i class="fas fa-plus"></i> إضافة سؤال
+                            </button>
+                            <button class="btn btn-outline" onclick="previewQuestions()">
+                                <i class="fas fa-eye"></i> معاينة
+                            </button>
+                        </div>
+                        <div class="questions-list" id="questions-list">
+                            ${renderQuestionsList()}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // الحصول على عدد التصنيفات
+        function getCategoriesCount() {
+            const categories = new Set(appState.questions.map(q => q.category));
+            return categories.size;
+        }
+
+        // عرض قائمة الأسئلة
+        function renderQuestionsList() {
+            if (appState.questions.length === 0) {
+                return '<p class="no-questions">لا توجد أسئلة حالياً</p>';
+            }
+            
+            return appState.questions.map((q, index) => `
+                <div class="question-item">
+                    <div class="question-header">
+                        <span class="question-number">${index + 1}</span>
+                        <span class="question-category">${q.category}</span>
+                        <button class="btn btn-sm btn-danger" onclick="deleteQuestion(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="question-options">
+                        ${q.options.map((opt, i) => `
+                            <span class="option ${i === q.answer ? 'correct' : ''}">
+                                ${opt} ${i === q.answer ? '✓' : ''}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // استيراد الأسئلة من ملف يختاره المستخدم (txt/json)
+        function importQuestionsFromUserFile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.txt,.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const content = e.target.result;
+                            // هنا يمكن تحليل محتوى الملف وإضافة الأسئلة
+                            showNotification('تم استيراد الأسئلة بنجاح', 'success');
+                            openQuestionsManager(); // إعادة فتح النافذة لتحديث القائمة
+                        } catch (error) {
+                            showNotification('خطأ في قراءة الملف', 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        // حذف سؤال
+        function deleteQuestion(index) {
+            if (confirm('هل أنت متأكد من حذف هذا السؤال؟')) {
+                appState.questions.splice(index, 1);
+                showNotification('تم حذف السؤال بنجاح', 'success');
+                document.getElementById('questions-list').innerHTML = renderQuestionsList();
+            }
+        }
+
+        // معاينة الأسئلة
+        function previewQuestions() {
+            alert(`يوجد حالياً ${appState.questions.length} سؤال جاهز للعبة\n\nيمكنك إضافة المزيد من الأسئلة أو استيرادها من ملف.`);
+        }
+
+        // بدء اللعبة
+        function startGame() {
+            if (appState.connectedTeams.length < 2) {
+                alert('يجب انضمام فريقين على الأقل لبدء اللعبة');
+                return;
+            }
+            
+            if (!appState.questions || appState.questions.length === 0) {
+                if (appState.selectedGroup && Array.isArray(appState.selectedGroup.questions) && appState.selectedGroup.questions.length > 0) {
+                    appState.questions = appState.selectedGroup.questions;
+                } else if (appState.questionGroups && appState.questionGroups.length > 0 && appState.questionGroups[0].questions && appState.questionGroups[0].questions.length > 0) {
+                    appState.questions = appState.questionGroups[0].questions;
+                    appState.selectedGroup = appState.questionGroups[0];
+                } else if (appState.allQuestions && appState.allQuestions.length > 0) {
+                    appState.questions = appState.allQuestions;
+                }
+            }
+            if (!appState.questions || appState.questions.length === 0) {
+                alert('لا توجد أسئلة جاهزة. افتح "اختيار مجموعة الأسئلة" واختر مجموعة، أو تأكد من تحميل الأسئلة.');
+                return;
+            }
+            
+            // حفظ بيانات اللعبة
+            localStorage.setItem('gameStarted', 'false'); // اللعبة لم تبدأ بعد
+            localStorage.setItem('gameInProgress', 'false'); // لا تبدأ اللعبة بعد
+            localStorage.setItem('roomActive', 'false'); // إغلاق الغرفة للانضمام الجديد
+            
+            // التأكد من وجود أسئلة قبل الحفظ
+            console.log('التحقق من الأسئلة في appState:', appState.questions);
+            console.log('عدد الأسئلة:', appState.questions ? appState.questions.length : 0);
+            
+            if (appState.questions && appState.questions.length > 0) {
+                localStorage.setItem('currentQuestions', JSON.stringify(appState.questions));
+                localStorage.setItem('gameQuestions', JSON.stringify(appState.questions)); // نسخة احتياطية
+                localStorage.setItem('selectedQuestions', JSON.stringify(appState.questions)); // نسخة احتياطية
+                console.log('تم حفظ', appState.questions.length, 'سؤال في currentQuestions');
+            } else {
+                console.error('لا توجد أسئلة للحفظ! محاولة الحصول من المجموعة المختارة...');
+                
+                // محاولة الحصول من المجموعة المختارة
+                if (appState.selectedGroup && appState.questionGroups) {
+                    const selectedGroupData = appState.questionGroups.find(g => g.id === appState.selectedGroup.id);
+                    if (selectedGroupData && selectedGroupData.questions) {
+                        console.log('وجدت أسئلة في المجموعة المختارة:', selectedGroupData.questions.length);
+                        appState.questions = selectedGroupData.questions;
+                        
+                        localStorage.setItem('currentQuestions', JSON.stringify(appState.questions));
+                        localStorage.setItem('gameQuestions', JSON.stringify(appState.questions));
+                        localStorage.setItem('selectedQuestions', JSON.stringify(appState.questions));
+                        console.log('تم حفظ', appState.questions.length, 'سؤال من المجموعة المختارة');
+                    } else {
+                        console.error('لا توجد أسئلة في المجموعة المختارة!');
+                        showNotification('لا توجد أسئلة محددة! الرجاء اختيار مجموعة أسئلة أولاً', 'error');
+                        return;
+                    }
+                } else {
+                    console.error('لا توجد مجموعة مختارة أو أسئلة!');
+                    showNotification('الرجاء اختيار مجموعة أسئلة أولاً', 'error');
+                    return;
+                }
+            }
+            
+            localStorage.setItem('gameTeams', JSON.stringify(appState.connectedTeams));
+            localStorage.setItem('currentRoom', appState.roomCode);
+            
+            // مسح جميع إشارات اللعبة القديمة
+            localStorage.removeItem('gameStarted');
+            localStorage.removeItem('gameInProgress');
+            localStorage.removeItem('currentQuestionIndex');
+            localStorage.removeItem('questionStartTime');
+            
+            // مزامنة مع Firebase حتى يرى الطلاب على الأجهزة الأخرى حالة اللعبة والأسئلة
+            if (typeof FirebaseSync !== 'undefined' && FirebaseSync.isEnabled() && appState.roomCode) {
+                FirebaseSync.setGameStateOnServer(appState.roomCode, {
+                    roomActive: false,
+                    currentQuestions: appState.questions,
+                    gameTeams: appState.connectedTeams
+                }).then(function() { console.log('[Firebase] تم مزامنة بيانات اللعبة'); });
+            }
+            
+            console.log('تم مسح إشارات اللعبة القديمة');
+            console.log('تم حفظ بيانات اللعبة - في الانتظار');
+            
+            // لا ترسل السؤال الأول هنا - انتظر المعلم يضغط "بدء اللعبة"
+            console.log('اللعبة جاهزة - في انتظار ضغط المعلم على "بدء اللعبة"');
+            
+            // توزيع البطاقات على الفرق
+            distributeCards();
+            
+            // الانتقال لصفحة مراقبة المعلم
+            console.log('الانتقال لصفحة المراقبة...');
+            window.location.href = 'teacher-monitor.html?autoStart=false';
+        }
+
+        // إعادة تعيين اللعبة
+        function resetGame() {
+            if (confirm('هل أنت متأكد من إعادة تعيين اللعبة؟')) {
+                appState.gameInProgress = false;
+                appState.connectedTeams = [];
+                localStorage.removeItem('connectedTeams');
+                localStorage.removeItem('gameInProgress');
+                localStorage.setItem('roomActive', 'true'); // إعادة فتح الغرفة
+                
+                // مسح جميع بيانات الطرد
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('kickedTeam_')) {
+                        localStorage.removeItem(key);
+                    }
+                }
+                
+                updateTeamsStatus();
+                showNotification('تم إعادة تعيين اللعبة', 'success');
+            }
+        }
+
+        // تحميل الأسئلة من ملف (اختياري) — غير مستخدم حالياً
+        async function loadQuestionsFromTextAsset() {
+            try {
+                console.log('جاري تحميل الأسئلة من ملف الاساله...');
+                
+                // قراءة الملف
+                const response = await fetch('الاساله');
+                const text = await response.text();
+                
+                // تحليل الأسئلة
+                // استخدم المحلل الرئيسي الموجود أعلى الملف (يدعم (صح))
+                const questions = parseQuestionsFromText(text);
+                
+                // تحديث المصفوفة
+                appState.allQuestions = questions;
+                
+                console.log(`تم تحميل ${questions.length} سؤال بنجاح`);
+                return questions;
+            } catch (error) {
+                console.error('خطأ في تحميل الأسئلة:', error);
+                // استخدام الأسئلة المدمجة كخطة احتياطية
+                return appState.allQuestions;
+            }
+        }
+
+        // تحليل الأسئلة من النص
+        function parseQuestionsFromTextLegacy(text) {
+            const questions = [];
+            const lines = text.split('\n').filter(line => line.trim());
+            
+            let currentQuestion = {};
+            let questionNumber = 1;
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                
+                // التحقق من بداية السؤال
+                if (line.match(/^\d+\./)) {
+                    // حفظ السؤال السابق إذا وجد
+                    if (currentQuestion.question && currentQuestion.options.length >= 4) {
+                        questions.push(currentQuestion);
+                    }
+                    
+                    // بدء سؤال جديد
+                    currentQuestion = {
+                        question: line.replace(/^\d+\.\s*/, ''),
+                        options: [],
+                        answer: -1,
+                        category: "علوم"
+                    };
+                } 
+                // التحقق من الخيارات
+                else if (line.match(/^[أبجد]\)/)) {
+                    const option = line.replace(/^[أبجد]\)\s*/, '');
+                    currentQuestion.options.push(option);
+                    
+                    // التحقق من الإجابة الصحيحة (إذا كانت تحتل علامة ✓ أو صح)
+                    if (line.includes('(✓)') || line.includes('✓') || line.includes('(صح)')) {
+                        currentQuestion.answer = currentQuestion.options.length - 1;
+                    }
+                }
+            }
+            
+            // إضافة السؤال الأخير
+            if (currentQuestion.question && currentQuestion.options.length >= 4) {
+                questions.push(currentQuestion);
+            }
+            
+            return questions;
+        }
+
+        // تهيئة اللعبة عند تحميل الصفحة
+        async function init() {
+            console.log('بدء تهيئة صفحة المعلم...');
+            await prepareQuestionsData();
+
+            // تهيئة الأسئلة تلقائياً
+            if (appState.allQuestions && appState.allQuestions.length > 0) {
+                initializeQuestions();
+            }
+
+            await createRoom();
+            setupEventListeners();
+            startTeamUpdates();
+
+            console.log('تم تهيئة صفحة المعلم بنجاح');
+        }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        setupTeacherCodeCheck(function() {
+            init();
+        });
+
+        if (isTeacherVerified()) {
+            hideTeacherCodeOverlay();
+            init();
+        } else {
+            showTeacherCodeOverlay();
+            var input = document.getElementById('teacher-code-input');
+            if (input) input.focus();
+        }
+    });
+
+    // ==================== وظائف اللعبة المتقدمة ====================
+    
+    // حساب النقاط حسب وقت الإجابة
+    function calculatePoints(answerTime, isCorrect) {
+        if (!appState.gameSettings.advancedScoring) {
+            return isCorrect ? 1 : 0;
+        }
+        
+        if (answerTime <= 10) {
+            return isCorrect ? 3 : -3;
+        } else if (answerTime <= 20) {
+            return isCorrect ? 2 : -2;
+        } else if (answerTime <= appState.gameSettings.questionTime) {
+            return isCorrect ? 1 : -1;
+        } else {
+            return -2; // عدم الإجابة
+        }
+    }
+
+    // إدارة البنك
+    function updateBank(teamId, amount) {
+        const team = appState.connectedTeams.find(t => t.id === teamId);
+        if (team) {
+            team.bank = (team.bank || 0) + amount;
+            updateTeamUI(team);
+        }
+    }
+
+    // التساوي
+    function checkBalance(teamId) {
+        const team = appState.connectedTeams.find(t => t.id === teamId);
+        if (team && team.score < 0) {
+            updateBank(teamId, Math.abs(team.score));
+            team.score = 0;
+            updateTeamUI(team);
+        }
+    }
+
+    // معالجة الإجابات المتعددة
+    function handleMultipleAnswers(questionData) {
+        const correctAnswers = Object.entries(questionData)
+            .filter(([team, data]) => data.answer === questionData.correctAnswer)
+            .map(([team, data]) => ({ team, time: data.time }));
+        
+        if (correctAnswers.length > 1) {
+            // ترتيب حسب السرعة
+            correctAnswers.sort((a, b) => a.time - b.time);
+            
+            // الفريق الأسرع يسحب من الأبطأ
+            for (let i = 1; i < correctAnswers.length; i++) {
+                const fasterTeam = correctAnswers[0].team;
+                const slowerTeam = correctAnswers[i].team;
+                
+                const fasterTeamData = appState.connectedTeams.find(t => t.id === fasterTeam);
+                const slowerTeamData = appState.connectedTeams.find(t => t.id === slowerTeam);
+                
+                if (slowerTeamData && !slowerTeamData.shieldActive) {
+                    const points = calculatePoints(slowerTeam.time, false);
+                    slowerTeamData.score += points;
+                    updateBank(fasterTeam, Math.abs(points));
+                    updateTeamUI(slowerTeamData);
+                    updateTeamUI(fasterTeamData);
+                }
+            }
+        }
+    }
+
+    // استخدام البطاقات
+    function useCard(teamId, cardId) {
+        const team = appState.connectedTeams.find(t => t.id === teamId);
+        const card = appState.availableCards.find(c => c.id === cardId);
+        
+        if (!team || !card) {
+            showNotification('فريق أو بطاقة غير موجودة', 'error');
+            return;
+        }
+        
+        // التحقق من وجود البطاقة
+        if (!team.cards || !team.cards.includes(cardId)) {
+            showNotification('لا تملك هذه البطاقة', 'error');
+            return;
+        }
+        
+        // التحقق من النقاط الكافية
+        if (team.score < card.cost) {
+            showNotification('نقاط غير كافية', 'error');
+            return;
+        }
+        
+        // استخدام البطاقة
+        switch (cardId) {
+            case 'shield':
+                team.shieldActive = true;
+                showNotification(`فريق ${team.teamName} نشط حماية الرصيد`, 'success');
+                break;
+            case 'eliminate':
+                // سيتم تنفيذها في صفحة الطالب
+                localStorage.setItem(`card_${cardId}_${teamId}`, 'active');
+                showNotification(`فريق ${team.teamName} نشط حذف الخيارات`, 'success');
+                break;
+            case 'freeze':
+                // سيتم تنفيذها في صفحة الطالب
+                const targetTeam = prompt('اخترف الفريق لتجميده:');
+                if (targetTeam) {
+                    localStorage.setItem(`freeze_${targetTeam}`, 'active');
+                    showNotification(`فريق ${targetTeam} مجمد`, 'success');
+                }
+                break;
+        }
+        
+        // خصم النقاط وإزالة البطاقة
+        team.score -= card.cost;
+        team.cards = team.cards.filter(c => c !== cardId);
+        updateTeamUI(team);
+    }
+
+    // تحديث واجهة الفريق
+    function updateTeamUI(team) {
+        const teamElement = document.getElementById(`team-${team.id}`);
+        if (teamElement) {
+            const scoreElement = teamElement.querySelector('.team-score');
+            const bankElement = teamElement.querySelector('.team-bank');
+            const cardsElement = teamElement.querySelector('.team-cards');
+            
+            if (scoreElement) scoreElement.textContent = `النقاط: ${team.score}`;
+            if (bankElement) bankElement.textContent = `البنك: ${team.bank || 0}`;
+            if (cardsElement) cardsElement.textContent = `البطاقات: ${team.cards ? team.cards.length : 0}`;
+        }
+    }
+
+    // توزيع البطاقات على الفرق
+    function distributeCards() {
+        appState.connectedTeams.forEach(team => {
+            team.cards = ['shield', 'eliminate']; // بطاقتان لكل فريق
+            team.bank = 5; // 5 نقاط بداية في البنك
+            team.score = 0;
+            team.shieldActive = false;
+            updateTeamUI(team);
+        });
+    }
+
+    // ==================== وظائف اللعبة المتقدمة ====================
+    
+    // حساب النقاط حسب وقت الإجابة
+    function calculatePoints(answerTime, isCorrect) {
+        if (!appState.gameSettings.advancedScoring) {
+            return isCorrect ? 1 : 0;
+        }
+        
+        if (answerTime <= 10) {
+            return isCorrect ? 3 : -3;
+        } else if (answerTime <= 20) {
+            return isCorrect ? 2 : -2;
+        } else if (answerTime <= appState.gameSettings.questionTime) {
+            return isCorrect ? 1 : -1;
+        } else {
+            return -2; // عدم الإجابة
+        }
+    }
+
+    // إدارة البنك
+    function updateBank(teamId, amount) {
+        const team = appState.connectedTeams.find(t => t.id === teamId);
+        if (team) {
+            team.bank = (team.bank || 0) + amount;
+            updateTeamUI(team);
+        }
+    }
+
+    // التساوي
+    function checkBalance(teamId) {
+        const team = appState.connectedTeams.find(t => t.id === teamId);
+        if (team && team.score < 0) {
+            updateBank(teamId, Math.abs(team.score));
+            team.score = 0;
+            updateTeamUI(team);
+        }
+    }
+
+    // معالجة الإجابات المتعددة
+    function handleMultipleAnswers(questionData) {
+        const correctAnswers = Object.entries(questionData)
+            .filter(([team, data]) => data.answer === questionData.correctAnswer)
+            .map(([team, data]) => ({ team, time: data.time }));
+        
+        if (correctAnswers.length > 1) {
+            // ترتيب حسب السرعة
+            correctAnswers.sort((a, b) => a.time - b.time);
+            
+            // الفريق الأسرع يسحب من الأبطأ
+            for (let i = 1; i < correctAnswers.length; i++) {
+                const fasterTeam = correctAnswers[0].team;
+                const slowerTeam = correctAnswers[i].team;
+                
+                const fasterTeamData = appState.connectedTeams.find(t => t.id === fasterTeam);
+                const slowerTeamData = appState.connectedTeams.find(t => t.id === slowerTeam);
+                
+                if (slowerTeamData && !slowerTeamData.shieldActive) {
+                    const points = calculatePoints(slowerTeam.time, false);
+                    slowerTeamData.score += points;
+                    updateBank(fasterTeam, Math.abs(points));
+                    updateTeamUI(slowerTeamData);
+                    updateTeamUI(fasterTeamData);
+                }
+            }
+        }
+    }
+
+    // استخدام البطاقات
+    function useCard(teamId, cardId) {
+        const team = appState.connectedTeams.find(t => t.id === teamId);
+        const card = appState.availableCards.find(c => c.id === cardId);
+        
+        if (!team || !card) {
+            showNotification('فريق أو بطاقة غير موجودة', 'error');
+            return;
+        }
+        
+        // التحقق من وجود البطاقة
+        if (!team.cards || !team.cards.includes(cardId)) {
+            showNotification('لا تملك هذه البطاقة', 'error');
+            return;
+        }
+        
+        // التحقق من النقاط الكافية
+        if (team.score < card.cost) {
+            showNotification('نقاط غير كافية', 'error');
+            return;
+        }
+        
+        // استخدام البطاقة
+        switch (cardId) {
+            case 'shield':
+                team.shieldActive = true;
+                showNotification(`فريق ${team.teamName} نشط حماية الرصيد`, 'success');
+                break;
+            case 'eliminate':
+                // سيتم تنفيذها في صفحة الطالب
+                localStorage.setItem(`card_${cardId}_${teamId}`, 'active');
+                showNotification(`فريق ${team.teamName} نشط حذف الخيارات`, 'success');
+                break;
+            case 'freeze':
+                // سيتم تنفيذها في صفحة الطالب
+                const targetTeam = prompt('اخترف الفريق لتجميده:');
+                if (targetTeam) {
+                    localStorage.setItem(`freeze_${targetTeam}`, 'active');
+                    showNotification(`فريق ${targetTeam} مجمد`, 'success');
+                }
+                break;
+        }
+        
+        // خصم النقاط وإزالة البطاقة
+        team.score -= card.cost;
+        team.cards = team.cards.filter(c => c !== cardId);
+        updateTeamUI(team);
+    }
+
+    // تحديث واجهة الفريق
+    function updateTeamUI(team) {
+        const teamElement = document.getElementById(`team-${team.id}`);
+        if (teamElement) {
+            const scoreElement = teamElement.querySelector('.team-score');
+            const bankElement = teamElement.querySelector('.team-bank');
+            const cardsElement = teamElement.querySelector('.team-cards');
+            
+            if (scoreElement) scoreElement.textContent = `النقاط: ${team.score}`;
+            if (bankElement) bankElement.textContent = `البنك: ${team.bank || 0}`;
+            if (cardsElement) cardsElement.textContent = `البطاقات: ${team.cards ? team.cards.length : 0}`;
+        }
+    }
+
+    // توزيع البطاقات على الفرق
+    function distributeCards() {
+        appState.connectedTeams.forEach(team => {
+            team.cards = ['shield', 'eliminate']; // بطاقتان لكل فريق
+            team.bank = 5; // 5 نقاط بداية في البنك
+            team.score = 0;
+            team.shieldActive = false;
+            updateTeamUI(team);
+        });
+    }
+
+    // ==================== نهاية وظائف اللعبة المتقدمة ====================
+
+    </script>
+</body>
+</html>
+

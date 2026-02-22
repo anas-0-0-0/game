@@ -1,0 +1,5 @@
+# Redirect root to game.html
+/ /game.html 200
+
+# Handle all routes - redirect to game.html for SPA behavior
+/* /game.html 200
